@@ -1,0 +1,5 @@
+import "server-only";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+
+export async function listCurrentSupportTickets() { const supabase = await createServerSupabaseClient(); const result = await supabase.from("support_tickets").select("id,subject,status,created_at,updated_at").order("updated_at", { ascending: false }).limit(100); if (result.error) throw new Error("SUPPORT_LIST_FAILED"); return result.data; }
+export async function getCurrentSupportTicket(id: string) { const supabase = await createServerSupabaseClient(); const [ticket,messages] = await Promise.all([supabase.from("support_tickets").select("id,subject,status,created_at,updated_at").eq("id",id).maybeSingle(),supabase.from("support_messages").select("id,author_id,body,created_at").eq("ticket_id",id).order("created_at")]); if(ticket.error||messages.error||!ticket.data)return null; const identity=await supabase.auth.getUser(); return {...ticket.data,messages:messages.data.map((message)=>({...message,isCustomer:message.author_id===identity.data.user?.id}))}; }

@@ -1,0 +1,140 @@
+%PDF-1.4
+%BANK
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 5171 >>
+stream
+0.05 0.16 0.29 rg 0 714 612 78 re f
+1 1 1 rg
+BT /F1 22 Tf 42 752 Td (BANK) Tj ET
+BT /F1 12 Tf 42 730 Td (Account statement - banking simulator) Tj ET
+0 0 0 rg
+BT /F1 16 Tf 42 680 Td (Account statement) Tj ET
+BT /F1 9 Tf 42 660 Td (Everyday Checking  ending 1842) Tj ET
+BT /F1 9 Tf 42 646 Td (Period: 2026-09-01 through 2026-09-30  |  Version 2) Tj ET
+BT /F1 9 Tf 42 632 Td (Statement ID: 00000000-0000-4000-8000-000000000001) Tj ET
+0.93 0.95 0.97 rg 42 574 528 40 re f
+0 0 0 rg
+BT /F1 8 Tf 54 598 Td (OPENING BALANCE) Tj ET
+BT /F1 8 Tf 190 598 Td (TOTAL CREDITS) Tj ET
+BT /F1 8 Tf 326 598 Td (TOTAL DEBITS) Tj ET
+BT /F1 8 Tf 462 598 Td (CLOSING BALANCE) Tj ET
+BT /F1 10 Tf 54 583 Td (USD 1,250.75) Tj ET
+BT /F1 10 Tf 190 583 Td (USD 35,000.00) Tj ET
+BT /F1 10 Tf 326 583 Td (USD 567.56) Tj ET
+BT /F1 10 Tf 462 583 Td (USD 35,683.19) Tj ET
+BT /F2 8 Tf 42 550 Td (DATE        DESCRIPTION                              CREDIT          DEBIT) Tj ET
+0.68 0.72 0.76 RG 42 544 m 570 544 l S
+BT /F2 7.5 Tf 42 528 Td (2026-09-01  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 515 Td (2026-09-02  Synthetic merchant purchase 2                                USD 12.87) Tj ET
+BT /F2 7.5 Tf 42 502 Td (2026-09-03  Synthetic merchant purchase 3                                USD 13.24) Tj ET
+BT /F2 7.5 Tf 42 489 Td (2026-09-04  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 476 Td (2026-09-05  Synthetic merchant purchase 5                                USD 13.98) Tj ET
+BT /F2 7.5 Tf 42 463 Td (2026-09-06  Synthetic merchant purchase 6                                USD 14.35) Tj ET
+BT /F2 7.5 Tf 42 450 Td (2026-09-07  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 437 Td (2026-09-08  Synthetic merchant purchase 8                                USD 15.09) Tj ET
+BT /F2 7.5 Tf 42 424 Td (2026-09-09  Synthetic merchant purchase 9                                USD 15.46) Tj ET
+BT /F2 7.5 Tf 42 411 Td (2026-09-10  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 398 Td (2026-09-11  Synthetic merchant purchase 11                               USD 16.20) Tj ET
+BT /F2 7.5 Tf 42 385 Td (2026-09-12  Synthetic merchant purchase 12                               USD 16.57) Tj ET
+BT /F2 7.5 Tf 42 372 Td (2026-09-13  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 359 Td (2026-09-14  Synthetic merchant purchase 14                               USD 17.31) Tj ET
+BT /F2 7.5 Tf 42 346 Td (2026-09-15  Synthetic merchant purchase 15                               USD 17.68) Tj ET
+BT /F2 7.5 Tf 42 333 Td (2026-09-16  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 320 Td (2026-09-17  Synthetic merchant purchase 17                               USD 18.42) Tj ET
+BT /F2 7.5 Tf 42 307 Td (2026-09-18  Synthetic merchant purchase 18                               USD 18.79) Tj ET
+BT /F2 7.5 Tf 42 294 Td (2026-09-19  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 281 Td (2026-09-20  Synthetic merchant purchase 20                               USD 19.53) Tj ET
+BT /F2 7.5 Tf 42 268 Td (2026-09-21  Synthetic merchant purchase 21                               USD 19.90) Tj ET
+BT /F2 7.5 Tf 42 255 Td (2026-09-22  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 242 Td (2026-09-23  Synthetic merchant purchase 23                               USD 20.64) Tj ET
+BT /F2 7.5 Tf 42 229 Td (2026-09-24  Synthetic merchant purchase 24                               USD 21.01) Tj ET
+BT /F2 7.5 Tf 42 216 Td (2026-09-25  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 203 Td (2026-09-26  Synthetic merchant purchase 26                               USD 21.75) Tj ET
+BT /F2 7.5 Tf 42 190 Td (2026-09-27  Synthetic merchant purchase 27                               USD 22.12) Tj ET
+BT /F2 7.5 Tf 42 177 Td (2026-09-28  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 164 Td (2026-09-01  Synthetic merchant purchase 29                               USD 22.86) Tj ET
+BT /F2 7.5 Tf 42 151 Td (2026-09-02  Synthetic merchant purchase 30                               USD 23.23) Tj ET
+BT /F2 7.5 Tf 42 138 Td (2026-09-03  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 125 Td (2026-09-04  Synthetic merchant purchase 32                               USD 23.97) Tj ET
+BT /F2 7.5 Tf 42 112 Td (2026-09-05  Synthetic merchant purchase 33                               USD 24.34) Tj ET
+BT /F2 7.5 Tf 42 99 Td (2026-09-06  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+0.68 0.72 0.76 RG 42 72 m 570 72 l S
+0 0 0 rg
+BT /F1 7.5 Tf 42 56 Td (Synthetic banking statement for development and demonstration only. No real banking services.) Tj ET
+BT /F1 7.5 Tf 42 43 Td (Generated 2026-09-30 12:00:00 UTC) Tj ET
+BT /F1 7.5 Tf 510 43 Td (Page 1 of 2) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 2182 >>
+stream
+0.05 0.16 0.29 rg 0 714 612 78 re f
+1 1 1 rg
+BT /F1 22 Tf 42 752 Td (BANK) Tj ET
+BT /F1 12 Tf 42 730 Td (Account statement - banking simulator) Tj ET
+0 0 0 rg
+BT /F1 16 Tf 42 680 Td (Account statement) Tj ET
+BT /F1 9 Tf 42 660 Td (Everyday Checking  ending 1842) Tj ET
+BT /F1 9 Tf 42 646 Td (Period: 2026-09-01 through 2026-09-30  |  Version 2) Tj ET
+BT /F1 9 Tf 42 632 Td (Statement ID: 00000000-0000-4000-8000-000000000001) Tj ET
+0.93 0.95 0.97 rg 42 574 528 40 re f
+0 0 0 rg
+BT /F1 8 Tf 54 598 Td (OPENING BALANCE) Tj ET
+BT /F1 8 Tf 190 598 Td (TOTAL CREDITS) Tj ET
+BT /F1 8 Tf 326 598 Td (TOTAL DEBITS) Tj ET
+BT /F1 8 Tf 462 598 Td (CLOSING BALANCE) Tj ET
+BT /F1 10 Tf 54 583 Td (USD 1,250.75) Tj ET
+BT /F1 10 Tf 190 583 Td (USD 35,000.00) Tj ET
+BT /F1 10 Tf 326 583 Td (USD 567.56) Tj ET
+BT /F1 10 Tf 462 583 Td (USD 35,683.19) Tj ET
+BT /F2 8 Tf 42 550 Td (DATE        DESCRIPTION                              CREDIT          DEBIT) Tj ET
+0.68 0.72 0.76 RG 42 544 m 570 544 l S
+BT /F2 7.5 Tf 42 528 Td (2026-09-07  Synthetic merchant purchase 35                               USD 25.08) Tj ET
+BT /F2 7.5 Tf 42 515 Td (2026-09-08  Synthetic merchant purchase 36                               USD 25.45) Tj ET
+BT /F2 7.5 Tf 42 502 Td (2026-09-09  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 489 Td (2026-09-10  Synthetic merchant purchase 38                               USD 26.19) Tj ET
+BT /F2 7.5 Tf 42 476 Td (2026-09-11  Synthetic merchant purchase 39                               USD 26.56) Tj ET
+BT /F2 7.5 Tf 42 463 Td (2026-09-12  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
+BT /F2 7.5 Tf 42 450 Td (2026-09-13  Synthetic merchant purchase 41                               USD 27.30) Tj ET
+BT /F2 7.5 Tf 42 437 Td (2026-09-14  Synthetic merchant purchase 42                               USD 27.67) Tj ET
+0.68 0.72 0.76 RG 42 72 m 570 72 l S
+0 0 0 rg
+BT /F1 7.5 Tf 42 56 Td (Synthetic banking statement for development and demonstration only. No real banking services.) Tj ET
+BT /F1 7.5 Tf 42 43 Td (Generated 2026-09-30 12:00:00 UTC) Tj ET
+BT /F1 7.5 Tf 510 43 Td (Page 2 of 2) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000127 00000 n 
+0000000197 00000 n 
+0000000265 00000 n 
+0000000401 00000 n 
+0000005624 00000 n 
+0000005760 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+7994
+%%EOF

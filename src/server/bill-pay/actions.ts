@@ -1,0 +1,23 @@
+"use server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { requireVerifiedIdentity } from "@/server/auth/identity";
+import { requireSameOrigin } from "@/server/security/request";
+
+export type BillPayActionState={status:"idle"|"error";message?:string;fieldErrors?:Record<string,string[]|undefined>};
+const initial:BillPayActionState={status:"idle"};
+function value(data:FormData,key:string){const item=data.get(key);return typeof item==="string"?item:""}
+async function authorize(){await requireSameOrigin();await requireVerifiedIdentity();return createServerSupabaseClient()}
+
+export async function createPayeeAction(_state:BillPayActionState=initial,data:FormData):Promise<BillPayActionState>{
+  void _state;const parsed=z.object({name:z.string().trim().min(1,"Enter a payee name.").max(120),reference:z.string().trim().toUpperCase().regex(/^SIM-[A-Z0-9-]{8,40}$/,"Enter a synthetic payee reference.")}).safeParse({name:value(data,"name"),reference:value(data,"reference")});
+  if(!parsed.success)return{status:"error",message:"Check the payee details.",fieldErrors:parsed.error.flatten().fieldErrors};
+  const supabase=await authorize();const result=await supabase.rpc("create_current_payee",{p_name:parsed.data.name,p_synthetic_reference:parsed.data.reference});
+  if(result.error)return{status:"error",message:"We couldn’t save this payee."};revalidatePath("/bill-pay/new");redirect("/bill-pay/payees?message=created");
+}
+export async function archivePayeeAction(data:FormData){const parsed=z.uuid().safeParse(value(data,"payeeId"));if(!parsed.success)redirect("/bill-pay/payees?message=failed");const supabase=await authorize();const result=await supabase.rpc("archive_current_payee",{p_payee_id:parsed.data});revalidatePath("/bill-pay/new");redirect(`/bill-pay/payees?message=${result.error?"failed":"archived"}`)}
+export async function executePaymentAction(data:FormData){const parsed=z.object({account:z.uuid(),payee:z.uuid(),amountMinor:z.coerce.number().int().min(1).max(100000000),commandKey:z.uuid()}).safeParse({account:value(data,"account"),payee:value(data,"payee"),amountMinor:value(data,"amountMinor"),commandKey:value(data,"commandKey")});if(!parsed.success)redirect("/bill-pay/new?message=invalid");const supabase=await authorize();const result=await supabase.rpc("execute_current_payment",{p_account_id:parsed.data.account,p_payee_id:parsed.data.payee,p_amount_minor:parsed.data.amountMinor,p_idempotency_key:parsed.data.commandKey});if(result.error)redirect("/bill-pay/new?message=failed");revalidatePath("/dashboard");revalidatePath("/transactions");redirect(`/bill-pay/${result.data}`)}
+export async function schedulePaymentAction(data:FormData){const parsed=z.object({account:z.uuid(),payee:z.uuid(),amountMinor:z.coerce.number().int().min(1).max(100000000),timing:z.enum(["later","weekly","monthly"]),scheduledAt:z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/),endAt:z.string().optional(),commandKey:z.uuid()}).safeParse({account:value(data,"account"),payee:value(data,"payee"),amountMinor:value(data,"amountMinor"),timing:value(data,"timing"),scheduledAt:value(data,"scheduledAt"),endAt:value(data,"endAt")||undefined,commandKey:value(data,"commandKey")});if(!parsed.success)redirect("/bill-pay/new?message=invalid");const scheduledAt=`${parsed.data.scheduledAt}:00Z`;if(new Date(scheduledAt).getTime()<=Date.now())redirect("/bill-pay/new?message=invalid");const recurring=parsed.data.timing!=="later";const supabase=await authorize();const result=await supabase.rpc("schedule_current_payment",{p_account_id:parsed.data.account,p_payee_id:parsed.data.payee,p_amount_minor:parsed.data.amountMinor,p_scheduled_at:scheduledAt,p_frequency:recurring?parsed.data.timing:undefined,p_local_time:recurring?`${parsed.data.scheduledAt.slice(11)}:00`:undefined,p_timezone:recurring?"UTC":undefined,p_end_at:recurring&&parsed.data.endAt?`${parsed.data.endAt}T23:59:59Z`:undefined,p_idempotency_key:parsed.data.commandKey});if(result.error)redirect("/bill-pay/new?message=failed");revalidatePath("/dashboard");redirect(`/bill-pay/${result.data}`)}
+export async function cancelScheduledPaymentAction(data:FormData){const parsed=z.uuid().safeParse(value(data,"paymentId"));if(!parsed.success)redirect("/bill-pay");const supabase=await authorize();const result=await supabase.rpc("cancel_current_scheduled_payment",{p_payment_id:parsed.data});revalidatePath("/dashboard");revalidatePath("/bill-pay");redirect(result.error?"/bill-pay?message=cancel-failed":`/bill-pay/${parsed.data}`)}

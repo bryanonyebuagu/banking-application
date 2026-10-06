@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@layer base {
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); line-height: 1.5; }
+  h1, h2, h3 { letter-spacing: -0.015em; }
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
+  button, input, select, textarea { font: inherit; }
+  button:not(:disabled), a { -webkit-tap-highlight-color: transparent; }
+  button:not(:disabled) { cursor: pointer; }
+  h1, h2, h3, p { overflow-wrap: anywhere; }
+  dialog::backdrop { background: rgb(15 23 42 / 0.55); }
+  .bank-wordmark {
+    display: inline-block;
+    font-family: var(--font-open-sans), "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: 0.075em;
+    line-height: 1;
+    transform: scaleX(1.06);
+    transform-origin: left center;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+}

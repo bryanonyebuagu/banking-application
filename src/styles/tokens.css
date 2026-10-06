@@ -1,0 +1,23 @@
+@theme {
+  --color-brand: #005eb8;
+  --color-action: #005eb8;
+  --color-action-hover: #004a8f;
+  --color-canvas: #f7f8f9;
+  --color-surface: #ffffff;
+  --color-subtle: #f1f3f5;
+  --color-ink: #101820;
+  --color-muted: #4a5560;
+  --color-border: #c7cdd3;
+  --color-success: #166534;
+  --color-danger: #b91c1c;
+  --color-warning: #854d0e;
+  --color-focus: #005fcc;
+  --font-sans: var(--font-open-sans), "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --radius-control: 0.25rem;
+  --radius-card: 0.5rem;
+  --radius-dialog: 0.75rem;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.1);
+  --shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.18);
+  --container-public: 75rem;
+  --container-banking: 80rem;
+}
