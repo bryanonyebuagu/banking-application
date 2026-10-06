@@ -7,12 +7,15 @@ const messages: Record<string, string> = {
   "signed-out": "You have signed out.",
   "session-required": "Sign in to continue.",
   "link-invalid": "That authentication link is invalid or expired. Request a new one.",
+  "verification-failed": "We couldn’t verify that email link. Request a new one and try again.",
 };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ message?: string }> }) {
-  const message = messages[(await searchParams).message ?? ""];
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ message?: string; reference?: string }> }) {
+  const params = await searchParams;
+  const message = messages[params.message ?? ""];
+  const isError = params.message === "link-invalid" || params.message === "verification-failed";
   return <AuthShell title="Sign in" description="Access your BANK accounts securely.">
-    {message && <div className="mb-5"><Alert title={message} tone="success" /></div>}
+    {message && <div className="mb-5"><Alert title={message} tone={isError ? "error" : "success"}>{isError && params.reference ? <>Support reference: <code>{params.reference}</code></> : null}</Alert></div>}
     <LoginForm />
   </AuthShell>;
 }

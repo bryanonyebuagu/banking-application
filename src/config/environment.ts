@@ -1,6 +1,37 @@
 import { z } from "zod";
 
 const optionalValue = z.preprocess((value) => value === "" ? undefined : value, z.string().min(1).optional());
+
+function normalizedOrigin(value: string | undefined) {
+  if (!value) return null;
+  const candidate = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  const parsed = z.url().safeParse(candidate);
+  if (!parsed.success) return null;
+  return new URL(parsed.data).origin;
+}
+
+function isLoopback(origin: string) {
+  const hostname = new URL(origin).hostname;
+  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
+}
+
+export function resolveApplicationOrigin(input: Record<string, string | undefined>) {
+  const explicit = normalizedOrigin(input.APP_ORIGIN);
+  const isVercel = input.VERCEL === "1" || Boolean(input.VERCEL_ENV);
+
+  if (explicit && (!isVercel || !isLoopback(explicit))) return explicit;
+
+  if (isVercel) {
+    const vercelOrigin = input.VERCEL_ENV === "production"
+      ? normalizedOrigin(input.VERCEL_PROJECT_PRODUCTION_URL) ?? normalizedOrigin(input.VERCEL_URL)
+      : normalizedOrigin(input.VERCEL_URL) ?? normalizedOrigin(input.VERCEL_PROJECT_PRODUCTION_URL);
+    if (vercelOrigin && !isLoopback(vercelOrigin)) return vercelOrigin;
+    throw new Error("Invalid configuration: APP_ORIGIN must be a hosted URL on Vercel.");
+  }
+
+  return explicit ?? "http://localhost:3000";
+}
+
 const schema = z.object({
   APP_ENV: z.enum(["local", "test", "demo", "production"]).default("local"),
   APP_ORIGIN: z.url().default("http://localhost:3000"),
@@ -46,7 +77,7 @@ const schema = z.object({
 });
 
 export function parseEnvironment(input: Record<string, string | undefined>) {
-  const result = schema.safeParse(input);
+  const result = schema.safeParse({ ...input, APP_ORIGIN: resolveApplicationOrigin(input) });
   if (!result.success) {
     throw new Error(`Invalid configuration: ${result.error.issues.map((issue) => `${issue.path.join(".") || "environment"}: ${issue.message}`).join("; ")}`);
   }

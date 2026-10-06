@@ -79,7 +79,7 @@ export async function signUpAction(_state: AuthActionState = initialState, formD
   await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { emailRedirectTo: `${environment.APP_ORIGIN}/auth/confirm?next=/dashboard` },
+    options: { emailRedirectTo: `${environment.APP_ORIGIN}/auth/confirm?next=${encodeURIComponent("/register?step=personal")}` },
   });
   return {
     status: "success",
