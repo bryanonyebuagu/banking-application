@@ -6,6 +6,17 @@ import type { Database } from "@/types/database.generated";
 
 export async function createServerSupabaseClient() {
   if (!environment.NEXT_PUBLIC_SUPABASE_URL || !environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
+    console.error(
+      JSON.stringify({
+        event: "SUPABASE_SERVER_CONFIGURATION_MISSING",
+        missingVariables: [
+          !environment.NEXT_PUBLIC_SUPABASE_URL ? "NEXT_PUBLIC_SUPABASE_URL" : null,
+          !environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+            ? "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+            : null,
+        ].filter((name): name is string => name !== null),
+      }),
+    );
     throw new Error("Supabase server configuration is unavailable.");
   }
   const cookieStore = await cookies();
