@@ -74,8 +74,9 @@ try {
   const admin = createClient(config.NEXT_PUBLIC_SUPABASE_URL, secret, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+  const verificationOnly = process.env.AUTH_VERIFICATION_ONLY === "1";
 
-  if (process.env.AUTH_RECOVERY_ONLY !== "1") {
+  if (process.env.AUTH_RECOVERY_ONLY !== "1" && !verificationOnly) {
   stage = "protected-route-redirect";
   await page.goto(`${origin}/dashboard`);
   await expect(page).toHaveURL(/\/login\?message=session-required$/);
@@ -89,8 +90,14 @@ try {
   await page.locator('input[name="confirmPassword"]').fill("different");
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Enter a valid email address.")).toBeVisible();
-  await expect(page.getByText("Use at least 12 characters.")).toBeVisible();
+  await expect(page.getByText("Use at least 10 characters.")).toBeVisible();
   await expect(page.getByText("Passwords must match.")).toBeVisible();
+  const signupPassword = page.locator('input[name="password"]');
+  await expect(signupPassword).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Show password" }).first().click();
+  await expect(signupPassword).toHaveAttribute("type", "text");
+  await page.getByRole("button", { name: "Hide password" }).click();
+  await expect(signupPassword).toHaveAttribute("type", "password");
 
   stage = "forgot-password-uniform-response";
   await page.goto(`${origin}/forgot-password`);
@@ -98,16 +105,21 @@ try {
   await page.getByRole("button", { name: "Send reset instructions" }).click();
   await expect(page.getByText("If an account matches that address, we sent password reset instructions.")).toBeVisible();
   await page.goto(`${origin}/login`);
+  const loginPassword = page.locator('input[name="password"]');
+  await expect(loginPassword).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Show password" }).click();
+  await expect(loginPassword).toHaveAttribute("type", "text");
+  await page.getByRole("button", { name: "Hide password" }).click();
 
   stage = "uniform-invalid-login";
   await page.getByLabel("Email address").fill(user.email);
-  await page.getByLabel("Password").fill("Incorrect-password-1!");
+  await page.locator('input[name="password"]').fill("Incorrect-password-1!");
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page.getByText("We couldn’t sign you in. Check your details or try again shortly.")).toBeVisible();
 
   stage = "valid-login";
   await page.getByLabel("Email address").fill(user.email);
-  await page.getByLabel("Password").fill(user.password);
+  await page.locator('input[name="password"]').fill(user.password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
   await expect(page.getByRole("heading", { name: "Welcome to Chaze Bank" })).toBeVisible();
@@ -371,7 +383,7 @@ try {
 
   stage = "login-after-expiration";
   await page.getByLabel("Email address").fill(user.email);
-  await page.getByLabel("Password").fill(user.password);
+  await page.locator('input[name="password"]').fill(user.password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
   const secondSession = await database.query(
@@ -387,7 +399,7 @@ try {
 
   stage = "login-after-revocation";
   await page.getByLabel("Email address").fill(user.email);
-  await page.getByLabel("Password").fill(user.password);
+  await page.locator('input[name="password"]').fill(user.password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
   stage = "logout";
@@ -395,7 +407,9 @@ try {
   await expect(page).toHaveURL(/\/login\?message=signed-out$/);
   await page.goto(`${origin}/dashboard`);
   await expect(page).toHaveURL(/\/login\?message=session-required$/);
+  }
 
+  if (process.env.AUTH_RECOVERY_ONLY !== "1") {
   stage = "provider-signup-verification";
   const verificationEmail = `banking-verification-${crypto.randomUUID()}@example.invalid`;
   const verificationPassword = `Verified-${crypto.randomUUID()}-aA1!`;
@@ -411,12 +425,18 @@ try {
   });
   assert.equal(tagged.error, null);
   await page.goto(`${origin}/auth/confirm?token_hash=${encodeURIComponent(verification.data.properties.hashed_token)}&type=signup&next=/dashboard`);
+  await expect(page).toHaveURL(`${origin}/login?verified=true`);
+  await expect(page.getByText("Email verified. Sign in to continue.")).toBeVisible();
+  await page.getByLabel("Email address").fill(verificationEmail);
+  await page.locator('input[name="password"]').fill(verificationPassword);
+  await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
   await expect(page.getByText(verificationEmail)).toBeVisible();
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/login\?message=signed-out$/);
   }
 
+  if (!verificationOnly) {
   stage = "password-recovery";
   const recovery = await admin.auth.admin.generateLink({ type: "recovery", email: user.email });
   assert.equal(recovery.error, null);
@@ -435,7 +455,7 @@ try {
   await page.getByRole("button", { name: "Update password" }).click();
   await expect(page).toHaveURL(/\/login\?message=password-updated$/);
   await page.getByLabel("Email address").fill(user.email);
-  await page.getByLabel("Password").fill(changedPassword);
+  await page.locator('input[name="password"]').fill(changedPassword);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
   await page.getByRole("button", { name: "Sign out" }).click();
@@ -448,7 +468,12 @@ try {
   );
   assert.ok(results.rows[0].sessions >= 2);
   assert.equal(results.rows[0].sessions, results.rows[0].revoked);
+  }
+  if (verificationOnly) {
+    console.log("Provider signup verification journey passed: hashed-token confirmation, verified login message, explicit sign-in and logout.");
+  } else {
   console.log("Browser banking journey passed: registration, accounts, balanced funding/reversal, transaction history, transfers, Bill Pay, credit cards, check deposit, private statements, provider auth, session controls, recovery and logout.");
+  }
 } catch (error) {
   console.error(`Auth browser verification stage: ${stage}`);
   console.error(JSON.stringify({

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { environment } from "@/config/server";
+import { passwordSchema } from "@/lib/auth/password-policy";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requireSameOrigin } from "@/server/security/request";
 
@@ -14,13 +15,6 @@ export type AuthActionState = {
 
 const initialState: AuthActionState = { status: "idle" };
 const emailSchema = z.string().trim().toLowerCase().email("Enter a valid email address.").max(254);
-const passwordSchema = z.string()
-  .min(12, "Use at least 12 characters.")
-  .max(128, "Use no more than 128 characters.")
-  .regex(/[a-z]/, "Include a lowercase letter.")
-  .regex(/[A-Z]/, "Include an uppercase letter.")
-  .regex(/[0-9]/, "Include a number.")
-  .regex(/[^A-Za-z0-9]/, "Include a symbol.");
 
 function formValue(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -76,11 +70,22 @@ export async function signUpAction(_state: AuthActionState = initialState, formD
   });
   if (!parsed.success) return validationFailure(parsed.error);
   const supabase = await createServerSupabaseClient();
-  await supabase.auth.signUp({
+  const signedUp = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { emailRedirectTo: `${environment.APP_ORIGIN}/auth/confirm?next=${encodeURIComponent("/register?step=personal")}` },
+    options: { emailRedirectTo: `${environment.APP_ORIGIN}/auth/confirm` },
   });
+  if (signedUp.error) {
+    console.error(JSON.stringify({
+      event: "AUTH_SIGNUP_FAILED",
+      providerCode: signedUp.error.code ?? null,
+      providerStatus: signedUp.error.status ?? null,
+    }));
+    return {
+      status: "error",
+      message: "We couldn’t complete your signup request. Try again shortly or contact support.",
+    };
+  }
   return {
     status: "success",
     message: "If this address can be registered, we sent a verification link. Open it in this browser to continue.",

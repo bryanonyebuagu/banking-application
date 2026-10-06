@@ -8,7 +8,7 @@ import type { Database } from "@/types/database.generated";
 const otpTypes = new Set<EmailOtpType>(["email", "email_change", "invite", "magiclink", "recovery", "signup"]);
 
 function safeNext(value: string | null) {
-  return value && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") ? value : "/register?step=personal";
+  return value && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") ? value : "/dashboard";
 }
 
 function confirmationFailure(reference: string) {
@@ -24,19 +24,25 @@ export async function GET(request: NextRequest) {
   const rawType = request.nextUrl.searchParams.get("type");
   const type = rawType && otpTypes.has(rawType as EmailOtpType) ? rawType as EmailOtpType : null;
   const code = request.nextUrl.searchParams.get("code");
+  const isSignupConfirmation = Boolean(code) || type === "signup";
   const destination = safeNext(request.nextUrl.searchParams.get("next"));
-  const continuation = new URL("/auth/continue", environment.APP_ORIGIN);
-  continuation.searchParams.set("next", destination);
-  const response = NextResponse.redirect(continuation);
+  const redirectUrl = isSignupConfirmation
+    ? new URL("/login?verified=true", environment.APP_ORIGIN)
+    : new URL(`/auth/continue?next=${encodeURIComponent(destination)}`, environment.APP_ORIGIN);
+  const response = NextResponse.redirect(redirectUrl);
+  const cookieJar = new Map(request.cookies.getAll().map(({ name, value }) => [name, value]));
   const supabase = createServerClient<Database>(
     environment.NEXT_PUBLIC_SUPABASE_URL!,
     environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookieOptions: { path: "/", sameSite: "lax", secure: new URL(environment.APP_ORIGIN).protocol === "https:" },
       cookies: {
-        getAll: () => request.cookies.getAll(),
+        getAll: () => Array.from(cookieJar, ([name, value]) => ({ name, value })),
         setAll: (cookiesToSet) => {
-          for (const { name, value, options } of cookiesToSet) response.cookies.set(name, value, options);
+          for (const { name, value, options } of cookiesToSet) {
+            cookieJar.set(name, value);
+            response.cookies.set(name, value, options);
+          }
         },
       },
     },
@@ -56,6 +62,24 @@ export async function GET(request: NextRequest) {
         flow: code ? "pkce" : tokenHash ? "token_hash" : "missing",
       }));
       return confirmationFailure(reference);
+    }
+    if (isSignupConfirmation) {
+      const signedOut = await supabase.auth.signOut({ scope: "local" });
+      if (signedOut.error) {
+        console.error(JSON.stringify({
+          event: "AUTH_EMAIL_CONFIRMATION_FAILED",
+          reference,
+          stage: "session_clear",
+          providerCode: signedOut.error.code ?? null,
+        }));
+        return confirmationFailure(reference);
+      }
+      console.info(JSON.stringify({
+        event: "AUTH_EMAIL_CONFIRMED",
+        reference,
+        flow: code ? "pkce" : "token_hash",
+      }));
+      return response;
     }
     const synced = await supabase.rpc("sync_current_session");
     if (synced.error) {
