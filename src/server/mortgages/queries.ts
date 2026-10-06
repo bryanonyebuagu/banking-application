@@ -24,5 +24,6 @@ export async function getCurrentMortgage(id: string) {
     getLoanAccountOptions(),
   ]);
   if (mortgage.error || balances.error || !mortgage.data) return null;
-  return { ...mortgage.data, balance: balances.data.find((item) => item.mortgage_id === mortgage.data.id) ?? null, fundingAccounts: accounts, mortgage_payments: [...mortgage.data.mortgage_payments].sort((a, b) => (b.paid_at ?? b.created_at).localeCompare(a.paid_at ?? a.created_at)) };
+  const currentMortgage = mortgage.data;
+  return { ...currentMortgage, balance: balances.data.find((item) => item.mortgage_id === currentMortgage.id) ?? null, fundingAccounts: accounts, mortgage_payments: [...currentMortgage.mortgage_payments].sort((a, b) => (b.paid_at ?? b.created_at).localeCompare(a.paid_at ?? a.created_at)) };
 }

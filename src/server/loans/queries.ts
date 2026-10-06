@@ -32,10 +32,11 @@ export async function getCurrentLoan(id: string) {
     getLoanAccountOptions(),
   ]);
   if (loan.error || balances.error || !loan.data) return null;
+  const currentLoan = loan.data;
   return {
-    ...loan.data,
-    balance: balances.data.find((item) => item.loan_id === loan.data.id) ?? null,
+    ...currentLoan,
+    balance: balances.data.find((item) => item.loan_id === currentLoan.id) ?? null,
     fundingAccounts: accounts,
-    loan_payments: [...loan.data.loan_payments].sort((a, b) => (b.paid_at ?? b.created_at).localeCompare(a.paid_at ?? a.created_at)),
+    loan_payments: [...currentLoan.loan_payments].sort((a, b) => (b.paid_at ?? b.created_at).localeCompare(a.paid_at ?? a.created_at)),
   };
 }
