@@ -1,5 +1,5 @@
 %PDF-1.4
-%BANK
+%Chaze Bank
 1 0 obj
 << /Type /Catalog /Pages 2 0 R >>
 endobj
@@ -16,12 +16,12 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
 endobj
 6 0 obj
-<< /Length 5171 >>
+<< /Length 5141 >>
 stream
 0.05 0.16 0.29 rg 0 714 612 78 re f
 1 1 1 rg
-BT /F1 22 Tf 42 752 Td (BANK) Tj ET
-BT /F1 12 Tf 42 730 Td (Account statement - banking simulator) Tj ET
+BT /F1 22 Tf 42 752 Td (Chaze Bank) Tj ET
+BT /F1 12 Tf 42 730 Td (Chaze Bank account statement) Tj ET
 0 0 0 rg
 BT /F1 16 Tf 42 680 Td (Account statement) Tj ET
 BT /F1 9 Tf 42 660 Td (Everyday Checking  ending 1842) Tj ET
@@ -75,7 +75,7 @@ BT /F2 7.5 Tf 42 112 Td (2026-09-05  Synthetic merchant purchase 33             
 BT /F2 7.5 Tf 42 99 Td (2026-09-06  Synthetic payroll deposit                  USD 2,500.00               ) Tj ET
 0.68 0.72 0.76 RG 42 72 m 570 72 l S
 0 0 0 rg
-BT /F1 7.5 Tf 42 56 Td (Synthetic banking statement for development and demonstration only. No real banking services.) Tj ET
+BT /F1 7.5 Tf 42 56 Td (Chaze Bank account statement. Keep this document for your records.) Tj ET
 BT /F1 7.5 Tf 42 43 Td (Generated 2026-09-30 12:00:00 UTC) Tj ET
 BT /F1 7.5 Tf 510 43 Td (Page 1 of 2) Tj ET
 endstream
@@ -84,12 +84,12 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
 endobj
 8 0 obj
-<< /Length 2182 >>
+<< /Length 2152 >>
 stream
 0.05 0.16 0.29 rg 0 714 612 78 re f
 1 1 1 rg
-BT /F1 22 Tf 42 752 Td (BANK) Tj ET
-BT /F1 12 Tf 42 730 Td (Account statement - banking simulator) Tj ET
+BT /F1 22 Tf 42 752 Td (Chaze Bank) Tj ET
+BT /F1 12 Tf 42 730 Td (Chaze Bank account statement) Tj ET
 0 0 0 rg
 BT /F1 16 Tf 42 680 Td (Account statement) Tj ET
 BT /F1 9 Tf 42 660 Td (Everyday Checking  ending 1842) Tj ET
@@ -117,7 +117,7 @@ BT /F2 7.5 Tf 42 450 Td (2026-09-13  Synthetic merchant purchase 41             
 BT /F2 7.5 Tf 42 437 Td (2026-09-14  Synthetic merchant purchase 42                               USD 27.67) Tj ET
 0.68 0.72 0.76 RG 42 72 m 570 72 l S
 0 0 0 rg
-BT /F1 7.5 Tf 42 56 Td (Synthetic banking statement for development and demonstration only. No real banking services.) Tj ET
+BT /F1 7.5 Tf 42 56 Td (Chaze Bank account statement. Keep this document for your records.) Tj ET
 BT /F1 7.5 Tf 42 43 Td (Generated 2026-09-30 12:00:00 UTC) Tj ET
 BT /F1 7.5 Tf 510 43 Td (Page 2 of 2) Tj ET
 endstream
@@ -125,16 +125,16 @@ endobj
 xref
 0 9
 0000000000 65535 f 
-0000000015 00000 n 
-0000000064 00000 n 
-0000000127 00000 n 
-0000000197 00000 n 
-0000000265 00000 n 
-0000000401 00000 n 
-0000005624 00000 n 
-0000005760 00000 n 
+0000000021 00000 n 
+0000000070 00000 n 
+0000000133 00000 n 
+0000000203 00000 n 
+0000000271 00000 n 
+0000000407 00000 n 
+0000005600 00000 n 
+0000005736 00000 n 
 trailer
 << /Size 9 /Root 1 0 R >>
 startxref
-7994
+7940
 %%EOF

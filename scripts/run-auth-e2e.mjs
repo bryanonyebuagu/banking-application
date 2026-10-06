@@ -110,7 +110,7 @@ try {
   await page.getByLabel("Password").fill(user.password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
-  await expect(page.getByRole("heading", { name: "Welcome to BANK" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Welcome to Chaze Bank" })).toBeVisible();
   await expect(page.getByText(user.email)).toBeVisible();
   await expect(page.getByRole("heading", { name: "No banking products yet" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Open account" })).toBeDisabled();

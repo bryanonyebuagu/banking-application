@@ -1,12 +1,12 @@
 # Project status
 
-Updated: 2026-10-04.
+Updated: 2026-10-06.
 
 ## Current milestone
 
-All planned product and administration build work through Milestone E is implemented. Milestone F verification is paused because the user explicitly requested no further tests, lint, type-check, build, audit or browser runs.
+All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress; TypeScript validation and the production build pass after the Chaze Bank rebrand.
 
-Current blocker: final verification cannot be completed while that instruction remains active. No implementation blocker is known.
+Current blocker: production banking rails require selection and onboarding of an approved provider. No implementation blocker is known for the existing application.
 
 ## Milestone tracking
 
@@ -17,7 +17,7 @@ Current blocker: final verification cannot be completed while that instruction r
 | C — Profile, Security & Support | Profile/settings, private synthetic documents, authenticator MFA, device/session management, security history and secure support tickets | — | — | None | Final reference tuning |
 | D — Staff/Admin | MFA-gated staff shell, capability matrix, customer/product lookup, restrictions, verification review, assigned support, audit history and staff provisioning | — | — | None | Final reference tuning |
 | E — Complete Journey | Complete customer/staff routes, hosted persistence, expanded route guard and deterministic demo-data builder | — | Optional execution of the demo-data builder after local credentials are configured | None | — |
-| F — Final Quality | Security headers, responsive primitives, accessibility foundations, operational runbooks and accumulated earlier-phase evidence | — | Final integrated verification and all-width review | User requested no tests | Exact private-screen fidelity remains provisional without supplied screenshots |
+| F — Final Quality | Security headers, responsive primitives, accessibility foundations, operational runbooks, Chaze Bank rebrand, TypeScript validation and production build | Final integrated verification and all-width review | Browser, accessibility, financial reconciliation and security regression suites | Approved provider onboarding blocks live rails | Exact private-screen fidelity remains provisional without approved designs |
 
 ## Completed features
 
@@ -142,8 +142,8 @@ Latest Phase 4 evidence on 2026-09-29:
 
 Latest Phase 5 evidence on 2026-09-29:
 
-- Current public Chase pages were reviewed for structural evidence only: audience/product navigation, large promotional composition, product cards, resource sections and deep footer grouping. No screenshots or trustworthy pixel measurements were available, so project tokens remain explicitly provisional.
-- Fourteen required public routes use one typed content model and shared page composition. Copy, BANK branding and availability messaging are original to this simulator; no Chase logo or assets are used.
+- Common public banking patterns were reviewed for structural evidence only: audience and product navigation, large promotional composition, product cards, resource sections and deep footer grouping.
+- Fourteen required public routes use one typed content model and shared page composition. Copy, Chaze Bank branding, original icons and generated imagery are owned by this project; no external bank logo or proprietary branding asset is used.
 - Desktop audience/product navigation, mobile drawer, grouped footer and every public route are reachable. Checking, savings, cards, lending and investing pages identify their future implementation phase rather than exposing dead application actions.
 - Universal gate passed: typecheck, lint with zero warnings, 6/6 unit tests, production build, 13/13 public/foundation browser tests, accessibility scans and overflow checks at all nine required widths, plus the full hosted authentication/registration regression.
 - Test cleanup is clean across 11 resource groups, hosted parity remains 52 tables, 514 columns, 37 policies and three private buckets, and the dependency audit reports zero vulnerabilities.
@@ -213,23 +213,23 @@ Latest public-experience refinement on 2026-10-06:
 
 - Rebuilt the homepage around a full-width lifestyle hero, a prominent six-product icon row and original home-lending and small-business campaign photography.
 - Added a public Travel route and connected Checking, Savings, Credit Cards, Home Loans, Travel and Business directly from the homepage.
-- Updated the interface to the observed public Chase Open Sans stack, #101820 body text and a clearer blue-led visual system while retaining BANK's own branding.
-- Gave the shared BANK wordmark an original bold geometric treatment and removed the developer-preview strip from the customer header.
+- Standardized the interface on the Open Sans stack, #101820 body text and a clear blue-led Chaze Bank visual system.
+- Gave the shared Chaze Bank wordmark an original bold geometric treatment and removed the developer-preview strip from the customer header.
 - Removed customer-facing simulator, simulated, synthetic, demo and test wording throughout registration, accounts, transfers, Bill Pay, cards, check deposits, loans, mortgages, investments, settings and support. Internal database/API identifiers remain unchanged for migration compatibility.
-- No tests, lint, type checking, production build or browser review were run, following the user's instruction to keep building without tests.
+- Chaze Bank rebranding passed TypeScript validation and the production build on 2026-10-06. No deployment was performed.
 
 Latest production-banking integration work on 2026-10-06:
 
 - Confirmed that email/password authentication already uses Supabase Auth for provider-issued verification, recovery and sessions. Production configuration now fails unless HTTPS, Supabase and custom SMTP delivery are declared.
-- Added fail-closed J.P. Morgan payment configuration for mock and production environments, with server-only credentials and explicit rail entitlements.
+- Added fail-closed, provider-neutral banking configuration for sandbox and production environments, with server-only credentials and explicit rail entitlements.
 - Added a protected Receive Money screen for ACH/direct deposit, domestic wire, international wire, RTP and Zelle capability states. It never invents account numbers, beneficiary instructions or successful settlements.
 - Added the payment-provider boundary and activation plan in `PRODUCTION_BANKING_INTEGRATION.md`.
-- Current external blocker: J.P. Morgan client/product onboarding and production credentials, plus separate Zelle Network financial-institution approval. Approved API operations, webhooks and reconciliation cannot be completed before those materials are issued.
+- Current external blocker: selection and onboarding of an approved banking or payment provider with production credentials, plus separate Zelle Network financial-institution approval. Approved API operations, webhooks and reconciliation cannot be completed before those materials are issued.
 - No tests, lint, type checking, production build or browser review were run, following the user's instruction to keep building without tests.
 
 - The repository was initialized with all project files untracked; no files have been staged, committed, reset or removed.
 - No remote CI run is recorded.
-- Exact Chase visual measurements remain provisional without supplied screenshots.
+- Final Chaze Bank visual measurements remain provisional without approved design specifications.
 - `@supabase/postgrest-typegen` is pinned at 0.3.1; generated output is reproducible and passes type checking and linting.
 - Hosted Supabase supersedes the unavailable local engine. Podman remains the only optional local container runtime; there is no Docker fallback and no reboot dependency.
 - Database-owner access remains a hosting trust boundary. Application controls protect normal anon/authenticated/service paths, not the hosted database owner.

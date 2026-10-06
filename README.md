@@ -1,7 +1,10 @@
-# BANK — full-stack banking simulator
+# Chaze Bank — full-stack banking application
 
-Next.js and TypeScript full-stack banking simulator built from the supplied master PRD. Customer banking, lending, investments, profile, security, support and the separate staff administration workspace are implemented. See [PROJECT_STATUS.md](PROJECT_STATUS.md) for exact status and verification limits.
+Next.js and TypeScript full-stack application for Chaze Bank, built from the supplied master PRD. Customer banking, lending, investments, profile, security, support and the separate staff administration workspace are implemented. See [PROJECT_STATUS.md](PROJECT_STATUS.md) for exact status and verification limits.
 
+## Product identity
+
+Chaze Bank is the product and customer-facing identity. Supabase is authentication infrastructure. The payment and banking integration boundary is provider-neutral and remains disabled until an approved provider is configured. This project is not affiliated with JPMorgan Chase.
 ## Start here
 
 - [PRD.md](PRD.md): unchanged master product requirements, all 50 sections.
@@ -47,6 +50,6 @@ Supabase CLI is pinned locally. See [supabase/MIGRATIONS.md](supabase/MIGRATIONS
 
 Git is initialized locally; no remote, commit or hosted resources have been created. Local skills live in .agents/skills and are explicitly routed by AGENTS.md. Read the relevant skill and existing implementation before feature work.
 
-Environment values are described inline in .env.example. Browser-visible values are limited to Supabase URL/publishable key. Server keys are optional until their isolated job/setup use exists, then required only in those environments. All financial and KYC data are synthetic; authentication is real for this simulator.
+Environment values are described inline in .env.example. Browser-visible values are limited to Supabase URL/publishable key. Server keys are optional until their isolated job/setup use exists, then required only in those environments. Development and test financial and KYC data are synthetic; authentication uses Supabase Auth.
 
 Operational procedures are recorded in [security operations](docs/operations/security-operations.md), covering backup/restore, secret rotation, incident triage and retention.

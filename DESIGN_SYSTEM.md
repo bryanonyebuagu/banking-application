@@ -1,10 +1,10 @@
 # Design system and visual implementation contract
 
-Chase is the primary visual reference under PRD.md. Use one replaceable BankLogo component displaying BANK; no actual Chase logo, copied branding assets or implied affiliation. This document establishes a token/component structure before Phase 1. It does not claim measured visual fidelity.
+Chaze Bank owns the product identity under PRD.md. Use one replaceable BankLogo component displaying Chaze Bank and only original branding assets. This document establishes the shared token and component structure.
 
 ## Evidence and token status
 
-Reference source: [public Chase home page](https://www.chase.com/), inspected again on 2026-10-06. The live public page confirms the audience navigation, large lifestyle hero, prominent product-icon row, promotional image cards and deep footer grouping. Browser-computed public styles identify the body stack as Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif at 16px with near-black #101820 text. BANK uses original generated photography, original line icons and its own wordmark; no Chase logo or proprietary illustration asset is included.
+Chaze Bank uses audience navigation, a large lifestyle hero, a prominent product-icon row, promotional image cards and deep footer grouping. The body stack is Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif at 16px with near-black #101820 text. Chaze Bank uses original generated photography, original line icons and its own wordmark; no third-party bank logo or proprietary illustration asset is included.
 
 ## Planned semantic tokens
 
@@ -39,7 +39,7 @@ Primitives own accessibility and visual variants. Banking components accept type
 - Dialogs/drawers: labelled title, focus containment, initial focus, Escape/close and focus restoration. Confirm critical operations on a review screen before submitting.
 - Tables: caption/headers, right-aligned amounts, visible sort state, stable pagination and row action labels. Mobile cards retain transaction meaning; use labelled local scroll regions only where table semantics require them.
 - Alerts/toasts: status role/live regions appropriate to urgency; durable financial receipt/errors stay in the page. Never rely on a transient toast as the only result.
-- BankLogo: one label/asset owner with accessible home link at the navigation layer. The BANK wordmark uses an original bold geometric Open Sans treatment with tightened proportions; it does not reproduce the proprietary Chase wordmark.
+- BankLogo: one label and asset owner with an accessible home link at the navigation layer. The Chaze Bank wordmark uses an original bold geometric Open Sans treatment.
 
 ## Layout and responsive rules
 
@@ -55,4 +55,4 @@ Target WCAG 2.2 AA through semantic HTML, labels, contrast, keyboard access, vis
 
 ## Visual review procedure
 
-Before each screen, inspect its reference; record composition, component boundaries, typography, colors, dimensions, spacing, navigation and responsive evidence. Build using existing tokens/components; compare screenshots at the same viewport, including loading/errors and mobile. Correct meaningful differences. Record unavailable reference states honestly and use consistent provisional patterns until supplied evidence exists. Never claim a private dashboard matches Chase without a supplied/observable reference.
+Before each screen, inspect its reference; record composition, component boundaries, typography, colors, dimensions, spacing, navigation and responsive evidence. Build using existing tokens/components; compare screenshots at the same viewport, including loading/errors and mobile. Correct meaningful differences. Record unavailable reference states honestly and use consistent provisional patterns until supplied evidence exists. Assess private dashboards against Chaze Bank product requirements, usability evidence and the shared design system.

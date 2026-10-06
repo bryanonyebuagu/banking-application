@@ -18,6 +18,6 @@ Result: passed. Phase 2 is separately blocked on local Supabase setup; see PROJE
 
 The initial browser run caught a missing icon, focus cycling and streamed 404 status. All were corrected before the successful rerun. The Windows runner now owns direct child server processes and cleans up without killing unrelated processes. No running test server remains after completion.
 
-Reviewed [320px screenshot](phase-1-home-320.png) and [1440px screenshot](phase-1-home-1440.png). All 18 home/component screenshots were produced in ignored test-results. This is a foundation layout check, not a claim of final Chase fidelity or a completed public banking site. Full manual screen-reader review remains in the roadmap.
+Reviewed [320px screenshot](phase-1-home-320.png) and [1440px screenshot](phase-1-home-1440.png). All 18 home/component screenshots were produced in ignored test-results. This is a foundation layout check, not a claim of final Chaze Bank visual completion. Full manual screen-reader review remains in the roadmap.
 
 Package installation audit: zero vulnerabilities. Tooling uses Node 24.18.0, Next 16.3.6, React 19.3.0, TypeScript 6.0.3 and Tailwind 4.3.3. ESLint 9 remains for current React-plugin peer compatibility; monitor its maintenance status as noted in ADR 0002. CI is configured but has not run remotely.

@@ -6,7 +6,7 @@ The requested production-banking scope is tracked in `PRODUCTION_BANKING_INTEGRA
 
 ## Trust boundaries and authentication
 
-Treat browser input, URL identifiers, uploads, provider callbacks and scheduled job payloads as untrusted. Supabase Auth owns passwords, email verification, password reset, refresh tokens and MFA factors. Never duplicate credentials in application tables. Signup accepts credentials for this application only; clearly label BANK as an independent simulator. Public pages must not imply Chase affiliation.
+Treat browser input, URL identifiers, uploads, provider callbacks and scheduled job payloads as untrusted. Supabase Auth owns passwords, email verification, password reset, refresh tokens and MFA factors. Never duplicate credentials in application tables. Signup accepts credentials for Chaze Bank only. Supabase remains authentication infrastructure and no public page may imply affiliation with an external bank or payment provider.
 
 Use request-scoped Supabase SSR clients with validated provider identity; do not authorize from decoded but unverified tokens or a client session object. Refresh cookies through the supported server integration. The selected Supabase SSR integration uses SameSite=Lax, path-scoped auth cookies and enables Secure on HTTPS; its browser-managed auth cookie is not HttpOnly. No token logging or private response caching.
 

@@ -32,8 +32,8 @@ function pageContent(input: StatementPdfInput, pageLines: StatementPdfLine[], pa
   const commands = [
     "0.05 0.16 0.29 rg 0 714 612 78 re f",
     "1 1 1 rg",
-    text("F1", 22, 42, 752, "BANK"),
-    text("F1", 12, 42, 730, "Account statement - banking simulator"),
+    text("F1", 22, 42, 752, "Chaze Bank"),
+    text("F1", 12, 42, 730, "Chaze Bank account statement"),
     "0 0 0 rg",
     text("F1", 16, 42, 680, "Account statement"),
     text("F1", 9, 42, 660, input.accountName + "  " + input.maskedAccountNumber),
@@ -63,7 +63,7 @@ function pageContent(input: StatementPdfInput, pageLines: StatementPdfLine[], pa
   }
   commands.push(
     "0.68 0.72 0.76 RG 42 72 m 570 72 l S", "0 0 0 rg",
-    text("F1", 7.5, 42, 56, "Synthetic banking statement for development and demonstration only. No real banking services."),
+    text("F1", 7.5, 42, 56, "Chaze Bank account statement. Keep this document for your records."),
     text("F1", 7.5, 42, 43, "Generated " + input.generatedAt.slice(0, 19).replace("T", " ") + " UTC"),
     text("F1", 7.5, 510, 43, "Page " + page + " of " + pages),
   );
@@ -88,7 +88,7 @@ export function generateStatementPdf(input: StatementPdfInput) {
     objects[contentNumber] = "<< /Length " + Buffer.byteLength(content, "ascii") + " >>\nstream\n" + content + "\nendstream";
   }
   objects[2] = "<< /Type /Pages /Kids [" + pageObjectNumbers.map((number) => number + " 0 R").join(" ") + "] /Count " + pageObjectNumbers.length + " >>";
-  let output = "%PDF-1.4\n%BANK\n";
+  let output = "%PDF-1.4\n%Chaze Bank\n";
   const offsets: number[] = [0];
   for (let index = 1; index < objects.length; index += 1) {
     offsets[index] = Buffer.byteLength(output, "ascii");

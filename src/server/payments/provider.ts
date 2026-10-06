@@ -16,11 +16,11 @@ const details: Record<PaymentRail, Omit<PaymentRailCapability, "rail" | "status"
   domestic_wire: { name: "Domestic wires", description: "Receive U.S. dollar wires using provider-issued beneficiary instructions." },
   international_wire: { name: "International wires", description: "Receive supported currencies using provider-issued international wire instructions." },
   rtp: { name: "Real-time payments", description: "Receive eligible payments over an enabled instant-payment rail." },
-  zelle: { name: "Zelle®", description: "Receive payments after BANK is approved as a participating financial institution and the customer is enrolled." },
+  zelle: { name: "Zelle®", description: "Receive payments after Chaze Bank is approved as a participating financial institution and the customer is enrolled." },
 };
 
 function enabledRails() {
-  return new Set((environment.JPMORGAN_ENABLED_RAILS ?? "").split(",").map((value) => value.trim()).filter(Boolean));
+  return new Set((environment.BANKING_PROVIDER_ENABLED_RAILS ?? "").split(",").map((value) => value.trim()).filter(Boolean));
 }
 
 export function getPaymentRailCapabilities(): PaymentRailCapability[] {
@@ -30,7 +30,7 @@ export function getPaymentRailCapabilities(): PaymentRailCapability[] {
     ...details[rail],
     status: rail === "zelle"
       ? "institutional_approval_required"
-      : environment.PAYMENTS_PROVIDER_MODE === "jpmorgan-production" && enabled.has(rail)
+      : environment.BANKING_PROVIDER_MODE === "production" && enabled.has(rail)
         ? "production_credentials_configured"
         : "provider_configuration_required",
   }));

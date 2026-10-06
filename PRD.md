@@ -2,7 +2,7 @@
 
 ## PROJECT
 
-Build a comprehensive full-stack banking web application using the publicly accessible Chase banking website and online-banking experience as the primary product and visual reference.
+Build a comprehensive full-stack banking web application for Chaze Bank with a polished, trustworthy and accessible online-banking experience.
 
 This is a private development/portfolio implementation intended to demonstrate the engineering required to build a large modern banking platform.
 
@@ -12,11 +12,11 @@ It must NOT simply be a collection of static screens.
 
 ---
 
-# 1. CHASE UI REFERENCE REQUIREMENT
+# 1. CHAZE BANK UI REQUIREMENT
 
-Chase is the primary UI/UX reference for this project.
+Chaze Bank is the product and customer-facing identity for this project.
 
-When implementing publicly observable Chase interfaces, study the current Chase web experience and reproduce the observable design as closely as practical.
+Use established online-banking interaction patterns as design research while keeping all copy, branding, icons and assets original to Chaze Bank.
 
 Pay close attention to:
 
@@ -66,9 +66,9 @@ Pay close attention to:
 
 Do not loosely interpret the reference and then create an unrelated banking design.
 
-Where a Chase interface is publicly observable and a reference has been supplied, use it as the implementation reference.
+Where a public banking-interface reference has been supplied, use it only for general layout and interaction research.
 
-Do NOT use the actual Chase logo.
+Use only the original Chaze Bank name, wordmark, icons and visual assets.
 
 Create a reusable placeholder:
 
@@ -78,7 +78,7 @@ The logo must be isolated so that it can later be replaced without changing the 
 
 Use a temporary neutral wordmark such as:
 
-BANK
+Chaze Bank
 
 Do not hard-code the placeholder throughout the application.
 
@@ -372,7 +372,7 @@ Connect customer records to Supabase authentication identities.
 
 ---
 
-# 11. BANK ACCOUNTS
+# 11. CHAZE BANK ACCOUNTS
 
 Support:
 
@@ -408,7 +408,7 @@ Use synthetic banking identifiers.
 
 # 12. ONLINE BANKING DASHBOARD
 
-Build a detailed online-banking dashboard based on the supplied/current Chase reference experience.
+Build a detailed Chaze Bank online-banking dashboard using the approved design system and supplied product requirements.
 
 Include:
 
@@ -987,7 +987,7 @@ Support:
 - Tablet
 - Mobile
 
-Closely reproduce the responsive behavior of supplied Chase references.
+Deliver polished responsive behavior across the supplied viewport requirements.
 
 Avoid:
 
@@ -1371,7 +1371,7 @@ Do not continue knowingly with:
 
 After implementing a reference screen:
 
-Compare the implementation against the supplied Chase reference.
+Compare the implementation against the approved Chaze Bank design system and supplied product requirements.
 
 Check:
 

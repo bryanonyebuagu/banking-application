@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 const openSans = Open_Sans({ subsets: ["latin"], display: "swap", variable: "--font-open-sans" });
 
 export const metadata: Metadata = {
-  title: { default: "BANK | Personal banking", template: "%s | BANK" },
-  description: "Manage accounts, payments, cards, lending and investments with BANK.",
+  title: { default: "Chaze Bank | Personal banking", template: "%s | Chaze Bank" },
+  description: "Manage accounts, payments, cards, lending and investments with Chaze Bank.",
   robots: { index: false, follow: false },
 };
 

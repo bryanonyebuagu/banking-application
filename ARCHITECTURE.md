@@ -59,7 +59,7 @@ Separate local, test and hosted-demo environments and Supabase projects. Phase 1
 
 - Initial money movement is USD, single-owner checking/savings with no overdraft or FX. Currency remains explicit; expanding ownership/currency requires a documented change.
 - Credit/loan/mortgage balances are obligations linked to ledger receivables, not deposit balances.
-- No supplied screenshots or authenticated Chase access exist. Public observations inform structure; exact styles remain provisional.
+- Public banking patterns informed the initial structure; Chaze Bank requirements and the shared design system now govern product identity and implementation.
 - Dependencies are pinned in package.json/package-lock.json; runtime is Node 24. Deployment design is Vercel plus Supabase, with Supabase Cron invoking a protected worker endpoint in Phase 10. No hosted resources exist. Email/session/MFA configuration is resolved during Phase 3; see docs/decisions/0002-phase-one.md.
 
 See DATABASE.md for posting, SECURITY.md for trust boundaries and IMPLEMENTATION_PHASES.md for sequencing.

@@ -34,7 +34,7 @@ export function LoginForm() {
     <Input name="password" type="password" autoComplete="current-password" label="Password" required error={state.fieldErrors?.password?.[0]} />
     <div className="text-right"><Link className="text-action underline underline-offset-4" href="/forgot-password">Forgot password?</Link></div>
     <SubmitButton>Sign in</SubmitButton>
-    <p className="text-center text-sm text-muted">New to BANK? <Link className="text-action underline underline-offset-4" href="/sign-up">Create an account</Link></p>
+    <p className="text-center text-sm text-muted">New to Chaze Bank? <Link className="text-action underline underline-offset-4" href="/sign-up">Create an account</Link></p>
   </form>;
 }
 

@@ -50,6 +50,6 @@ export default function HomePage() {
       </div>
     </section>
 
-    <section className="bg-brand text-white"><div className="mx-auto grid max-w-public items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8"><div><p className="text-sm font-bold uppercase tracking-[0.16em] text-white/75">BANK online</p><h2 className="mt-3 text-3xl font-semibold">Your finances, together in one place</h2><p className="mt-3 max-w-2xl text-white/85">View balances, move money, manage cards, review statements and control account security.</p></div><Link className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-brand" href="/login">Sign in to continue</Link></div></section>
+    <section className="bg-brand text-white"><div className="mx-auto grid max-w-public items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8"><div><p className="text-sm font-bold uppercase tracking-[0.16em] text-white/75">Chaze Bank online</p><h2 className="mt-3 text-3xl font-semibold">Your finances, together in one place</h2><p className="mt-3 max-w-2xl text-white/85">View balances, move money, manage cards, review statements and control account security.</p></div><Link className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-brand" href="/login">Sign in to continue</Link></div></section>
   </main>;
 }
