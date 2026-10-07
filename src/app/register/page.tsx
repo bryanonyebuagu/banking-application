@@ -13,7 +13,7 @@ type Step = typeof steps[number];
 const incomeLabels: Record<string,string> = { under_25000:"Under $25,000", "25000_49999":"$25,000–$49,999", "50000_74999":"$50,000–$74,999", "75000_99999":"$75,000–$99,999", "100000_149999":"$100,000–$149,999", "150000_plus":"$150,000 or more" };
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ step?: string; message?: string; result?: string }> }) {
-  await requireVerifiedIdentity();
+  const identity = await requireVerifiedIdentity();
   const supabase = await createServerSupabaseClient();
   const [{ data: customer }, { data: draft }, params] = await Promise.all([
     supabase.from("customers").select("id,first_name,middle_name,last_name,contact_email,phone,date_of_birth,employment,income_range,verification_status").maybeSingle(),
@@ -31,8 +31,23 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   }
   const active = steps.indexOf(step);
   const savedDraft = draft as RegistrationDraft | null;
+  const personalDraft = savedDraft ?? (identity.firstName || identity.lastName ? {
+    first_name: identity.firstName,
+    middle_name: null,
+    last_name: identity.lastName,
+    date_of_birth: null,
+    phone: null,
+    line1: null,
+    line2: null,
+    city: null,
+    state: null,
+    postal_code: null,
+    country: null,
+    employment: null,
+    income_range: null,
+  } satisfies RegistrationDraft : null);
 
-  if (step === "personal") return <RegistrationShell active={active} title="Tell us about yourself" description="Your email and password are secured. Add the details needed to complete your profile."><PersonalForm draft={savedDraft} /></RegistrationShell>;
+  if (step === "personal") return <RegistrationShell active={active} title="Tell us about yourself" description="Your name is ready. Add the remaining details needed to complete your profile."><PersonalForm draft={personalDraft} /></RegistrationShell>;
   if (!savedDraft && !customer) redirect("/register?step=personal");
   if (step === "address") return <RegistrationShell active={active} title="Add your home address" description="We use this address to complete your customer profile."><AddressForm draft={savedDraft!} /></RegistrationShell>;
   if (step === "employment") return <RegistrationShell active={active} title="Employment and income" description="Add your current employment and income range."><EmploymentForm draft={savedDraft!} /></RegistrationShell>;

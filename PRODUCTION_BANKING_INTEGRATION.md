@@ -1,39 +1,38 @@
-# Production banking integration
+# Connecting Chaze Bank to real payment rails
 
-## Current state
+The application ledger is complete, but a ledger entry is not the same thing as money settling through a bank network. ACH, wire, RTP and card settlement must come from an approved provider and be reconciled against that provider’s records.
 
-Email/password authentication is provider-backed by Supabase Auth. Signup confirmation, password recovery, PKCE callbacks, refresh sessions and authenticator MFA use provider-issued credentials rather than an application password table. Production delivery requires a verified sender domain and custom SMTP provider configured in the Supabase dashboard. Set `AUTH_EMAIL_DELIVERY=custom-smtp` only after that configuration is active.
+Supabase currently handles email authentication, recovery, sessions and MFA. It is application infrastructure. Chaze Bank remains the name customers see in the product and authentication emails.
 
-Supabase remains infrastructure rather than the customer-facing brand. The production sender name, confirmation subject/body and recovery subject/body must identify Chaze Bank. Repository templates under `supabase/templates` provide the approved copy; apply equivalent content in the hosted Supabase email-template settings.
+## Integration boundary
 
-The existing ledger, account identifiers and money-movement commands are internal application records. They are not connected to a deposit account or payment network and must never be presented as externally settled funds.
+All external money movement follows one path:
 
-## Production rails
+`customer → Chaze Bank application → Chaze Bank backend → provider adapter → approved provider`
 
-| Rail | Required external relationship | Application state |
-| --- | --- | --- |
-| ACH and direct deposit | Approved provider account or product, production API or reporting entitlement, issued account and routing instructions | Provider boundary and fail-closed capability state added |
-| Domestic wire | Approved wire product, production credentials, beneficiary instructions and webhook/reporting source | Provider boundary and fail-closed capability state added |
-| International wire | Approved cross-border product, supported currencies, FX/compliance setup and production credentials | Provider boundary and fail-closed capability state added |
-| Real-Time Payments | Approved provider RTP entitlement and eligible account | Provider boundary and fail-closed capability state added |
-| Zelle® | Chaze Bank must be accepted as a Zelle Network financial-institution partner and receive its implementation package | Institutional approval required; no public consumer API is substituted |
+Provider-specific code belongs behind the adapter. Route handlers and UI components must never call a provider directly, and provider credentials must remain server-only.
 
-## Activation sequence
+| Rail | What Chaze Bank still needs |
+| --- | --- |
+| ACH and direct deposit | Approved account product, production API access, assigned receiving instructions, reports and webhooks |
+| Domestic wire | Wire entitlement, beneficiary instructions, production authentication and status reporting |
+| International wire | Cross-border approval, supported currencies, FX/compliance rules and production credentials |
+| RTP | An eligible provider account and explicit real-time-payment entitlement |
+| Zelle® | Acceptance as a participating financial institution and the implementation package supplied through that partnership |
 
-1. Establish the regulated entity and operating/compliance program needed to offer accounts and money transmission in each served jurisdiction.
-2. Select an approved banking or payment provider and complete institutional onboarding for the required account, ACH, wire, RTP, reporting and webhook products.
-3. Complete the separate Zelle Network financial-institution partnership process.
-4. Configure a production domain, HTTPS, Supabase production project, custom SMTP sender and production redirect allowlist.
-5. Store provider credentials in the deployment secret manager. Never place them in `NEXT_PUBLIC_*`, source control or customer-visible responses.
-6. Implement the exact API operations and authentication mechanism assigned during onboarding, including mTLS or signing requirements where applicable.
-7. Add signed webhook ingestion, replay protection, idempotency, provider-status polling, returns/reversals, cutoff calendars and reconciliation.
-8. Replace internally created balances with provider-confirmed settlement events. A submitted request remains pending until confirmed by the provider.
-9. Complete provider certification, security review, disaster recovery, operations runbooks and production activation before enabling a rail.
+## Before a rail can be enabled
 
-## Runtime gates
+1. Complete the legal, regulatory and compliance work for every jurisdiction served.
+2. Choose a banking or payment provider and finish its institutional onboarding.
+3. Receive production credentials and a written list of enabled products.
+4. Implement the provider’s required authentication, signing or mTLS flow inside the adapter.
+5. Verify webhook signatures and protect against retries and replay attacks.
+6. Map submitted, pending, settled, returned and reversed provider states to internal records.
+7. Reconcile provider reports against the immutable ledger every day.
+8. Complete provider certification and operational review before exposing the rail to customers.
 
-`BANKING_PROVIDER_MODE` defaults to `disabled`. Production mode requires HTTPS, Supabase configuration and custom SMTP. Sandbox and production provider modes require server-only endpoint, OAuth and account configuration. `BANKING_PROVIDER_ENABLED_RAILS` records only entitlements confirmed by the approved provider. The application still rejects money movement until the approved API operation is implemented; the presence of credentials alone never creates a successful transaction.
+## Runtime protection
 
-The integration direction is customer → Chaze Bank application → Chaze Bank backend → provider-neutral banking integration boundary → approved provider. Provider-specific clients must remain behind this boundary and must not define the Chaze Bank product identity.
+`BANKING_PROVIDER_MODE` defaults to `disabled`. Sandbox and production modes require the server-only endpoint, OAuth and provider-account variables documented in `.env.example`. `BANKING_PROVIDER_ENABLED_RAILS` may list only entitlements confirmed by the provider.
 
-The protected `/receive-money` screen shows ACH/direct deposit, domestic wire, international wire, RTP and Zelle capability states without inventing account numbers or receiving instructions.
+Configuration alone does not activate a rail. The backend continues to reject live use until the approved provider operation and settlement handling are implemented. The `/receive-money` page therefore shows availability without creating account numbers, beneficiary instructions or successful settlements.

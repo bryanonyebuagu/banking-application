@@ -9,7 +9,7 @@ import { Drawer } from "@/components/ui/dialog";
 const audiences = [{label:"Personal",href:"/"},{label:"Business",href:"/business-banking"},{label:"Commercial",href:"/commercial"},{label:"Wealth Management",href:"/wealth-management"}];
 const products = [{label:"Checking",href:"/checking"},{label:"Savings",href:"/savings"},{label:"Credit Cards",href:"/credit-cards"},{label:"Home Loans",href:"/mortgage"},{label:"Auto",href:"/auto-financing"},{label:"Investing",href:"/investing"},{label:"Education",href:"/education"},{label:"Security",href:"/security"},{label:"Help",href:"/help-center"}];
 
-export function SiteHeader({ showPreview: _showPreview }: { showPreview: boolean }) {
+export function SiteHeader() {
   const [open,setOpen] = useState(false);
   return <header className="bg-surface shadow-sm">
     <div className="border-b border-border"><div className="mx-auto hidden w-full max-w-[1600px] items-center justify-between px-6 xl:flex xl:px-8">

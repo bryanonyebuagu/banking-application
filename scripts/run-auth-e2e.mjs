@@ -87,11 +87,9 @@ try {
   await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
   await page.locator('input[name="email"]').fill("invalid-address");
   await page.locator('input[name="password"]').fill("weak");
-  await page.locator('input[name="confirmPassword"]').fill("different");
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page.getByText("Enter a valid email address.")).toBeVisible();
   await expect(page.getByText("Use at least 10 characters.")).toBeVisible();
-  await expect(page.getByText("Passwords must match.")).toBeVisible();
   const signupPassword = page.locator('input[name="password"]');
   await expect(signupPassword).toHaveAttribute("type", "password");
   await page.getByRole("button", { name: "Show password" }).first().click();
@@ -426,7 +424,7 @@ try {
   assert.equal(tagged.error, null);
   await page.goto(`${origin}/auth/confirm?token_hash=${encodeURIComponent(verification.data.properties.hashed_token)}&type=signup&next=/dashboard`);
   await expect(page).toHaveURL(`${origin}/login?verified=true`);
-  await expect(page.getByText("Email verified. Sign in to continue.")).toBeVisible();
+  await expect(page.getByText("Email verified. Sign in with the email and password you used to create your account.")).toBeVisible();
   await page.getByLabel("Email address").fill(verificationEmail);
   await page.locator('input[name="password"]').fill(verificationPassword);
   await page.getByRole("button", { name: "Sign in" }).click();

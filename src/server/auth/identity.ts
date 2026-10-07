@@ -5,12 +5,20 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 export type VerifiedIdentity = {
   userId: string;
   email: string | null;
+  firstName: string | null;
+  lastName: string | null;
   currentAssuranceLevel: "aal1" | "aal2" | null;
   nextAssuranceLevel: "aal1" | "aal2" | null;
 };
 
 function assuranceLevel(value: unknown): "aal1" | "aal2" | null {
   return value === "aal1" || value === "aal2" ? value : null;
+}
+
+function metadataName(metadata: unknown, key: "first_name" | "last_name") {
+  if (!metadata || typeof metadata !== "object") return null;
+  const value = (metadata as Record<string, unknown>)[key];
+  return typeof value === "string" && value.trim() ? value.trim() : null;
 }
 
 export async function getVerifiedIdentity(): Promise<VerifiedIdentity | null> {
@@ -22,6 +30,8 @@ export async function getVerifiedIdentity(): Promise<VerifiedIdentity | null> {
   return {
     userId: subject,
     email: typeof claims.email === "string" ? claims.email : null,
+    firstName: metadataName(claims.user_metadata, "first_name"),
+    lastName: metadataName(claims.user_metadata, "last_name"),
     currentAssuranceLevel: assuranceLevel(claims.aal),
     nextAssuranceLevel: null,
   };

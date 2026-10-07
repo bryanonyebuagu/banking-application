@@ -43,19 +43,19 @@ export function LoginForm() {
 export function SignUpForm() {
   const [state, action] = useActionState(signUpAction, initialState);
   if (state.status === "success") {
-    return <div className="space-y-6" role="status">
-      <Alert title="Check your email" tone="success">{state.message}</Alert>
-      <p className="text-sm text-muted">Use the verification link before signing in. The link will return you to Chaze Bank.</p>
-      <Link className="inline-flex min-h-11 items-center justify-center rounded-control border border-action px-5 py-2 font-semibold text-action hover:bg-subtle" href="/login">Return to sign in</Link>
+    return <div role="status">
+      <Alert title="Check your inbox" tone="success">{state.message}</Alert>
     </div>;
   }
   return <form action={action} className="space-y-5" noValidate>
     <Message state={state} />
+    <div className="grid gap-5 sm:grid-cols-2">
+      <Input name="firstName" autoComplete="given-name" label="First name" required maxLength={100} error={state.fieldErrors?.firstName?.[0]} />
+      <Input name="lastName" autoComplete="family-name" label="Last name" required maxLength={100} error={state.fieldErrors?.lastName?.[0]} />
+    </div>
     <Input name="email" type="email" autoComplete="email" label="Email address" required error={state.fieldErrors?.email?.[0]} />
     <PasswordField name="password" autoComplete="new-password" label="Password" required minLength={10} maxLength={128} hint={PASSWORD_REQUIREMENT} error={state.fieldErrors?.password?.[0]} />
-    <PasswordField name="confirmPassword" autoComplete="new-password" label="Confirm password" required minLength={10} maxLength={128} error={state.fieldErrors?.confirmPassword?.[0]} />
     <SubmitButton>Create account</SubmitButton>
-    <p className="text-center text-sm text-muted">Already registered? <Link className="text-action underline underline-offset-4" href="/login">Sign in</Link></p>
   </form>;
 }
 

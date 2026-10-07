@@ -15,6 +15,7 @@ export type AuthActionState = {
 
 const initialState: AuthActionState = { status: "idle" };
 const emailSchema = z.string().trim().toLowerCase().email("Enter a valid email address.").max(254);
+const nameSchema = (label: string) => z.string().trim().min(1, `Enter your ${label}.`).max(100, `${label.charAt(0).toUpperCase()}${label.slice(1)} must be 100 characters or fewer.`);
 
 function formValue(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -56,24 +57,29 @@ export async function signUpAction(_state: AuthActionState = initialState, formD
   void _state;
   await requireSameOrigin();
   const parsed = z.object({
+    firstName: nameSchema("first name"),
+    lastName: nameSchema("last name"),
     email: emailSchema,
     password: passwordSchema,
-    confirmPassword: z.string(),
-  }).superRefine((value, context) => {
-    if (value.password !== value.confirmPassword) {
-      context.addIssue({ code: "custom", path: ["confirmPassword"], message: "Passwords must match." });
-    }
   }).safeParse({
+    firstName: formValue(formData, "firstName"),
+    lastName: formValue(formData, "lastName"),
     email: formValue(formData, "email"),
     password: formValue(formData, "password"),
-    confirmPassword: formValue(formData, "confirmPassword"),
   });
   if (!parsed.success) return validationFailure(parsed.error);
   const supabase = await createServerSupabaseClient();
   const signedUp = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { emailRedirectTo: `${environment.APP_ORIGIN}/auth/confirm` },
+    options: {
+      emailRedirectTo: `${environment.APP_ORIGIN}/auth/confirm`,
+      data: {
+        first_name: parsed.data.firstName,
+        last_name: parsed.data.lastName,
+        full_name: `${parsed.data.firstName} ${parsed.data.lastName}`,
+      },
+    },
   });
   if (signedUp.error) {
     console.error(JSON.stringify({
@@ -88,7 +94,7 @@ export async function signUpAction(_state: AuthActionState = initialState, formD
   }
   return {
     status: "success",
-    message: "If this address can be registered, we sent a verification link. Open it in this browser to continue.",
+    message: "If this address can be registered, we sent a verification link. Open your inbox and follow the link to continue.",
   };
 }
 

@@ -1,6 +1,6 @@
 # Project status
 
-Updated: 2026-10-06.
+Updated: 2026-10-07.
 
 ## Current milestone
 
@@ -208,6 +208,16 @@ Latest Milestone A check-deposit and statement evidence on 2026-09-30:
 - Both targets reached 22 migrations with zero pending. Parity matched 53 tables/528 columns/38 public-schema policies/three buckets, and cleanup was clean across 31 resource groups.
 
 ## Known issues and decisions
+
+Latest account-opening refinement on 2026-10-07:
+
+- Signup now collects first and last name with the email and password and stores the names in signed Supabase user metadata.
+- Registration uses those names as the starting values for the customer profile, while still requiring the remaining onboarding information.
+- The dashboard greets registered customers with a large `Hi, Firstname` heading.
+- Signup continues to use a generic post-submit response so the form does not expose whether an arbitrary email already belongs to a customer.
+- The main README, payment-rail guide and interface-reference README were rewritten in a shorter, more natural project voice.
+- No fabricated production balances or transaction history were added. Synthetic financial scenarios remain restricted to an identified demo environment and must use the immutable ledger.
+- TypeScript validation, lint with zero warnings, all 13 unit tests and the production build pass after these changes. A local rendered-form check confirmed signup has first name, last name, email and password while login remains email and password only.
 
 Latest public-experience refinement on 2026-10-06:
 

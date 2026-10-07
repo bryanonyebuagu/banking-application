@@ -16,8 +16,11 @@ function isLoopback(origin: string) {
 }
 
 export function resolveApplicationOrigin(input: Record<string, string | undefined>) {
-  const explicit = normalizedOrigin(input.APP_ORIGIN);
+  const explicitValue = input.APP_ORIGIN;
+  const explicit = explicitValue && /^https?:\/\//i.test(explicitValue) ? normalizedOrigin(explicitValue) : null;
   const isVercel = input.VERCEL === "1" || Boolean(input.VERCEL_ENV);
+
+  if (explicitValue && !explicit) throw new Error("Invalid configuration: APP_ORIGIN must be an absolute HTTP or HTTPS URL.");
 
   if (explicit && (!isVercel || !isLoopback(explicit))) return explicit;
 
@@ -56,7 +59,7 @@ const schema = z.object({
     if (value[key] && !z.url().safeParse(value[key]).success) context.addIssue({ code: "custom", path: [key], message: "Expected an absolute URL." });
   }
   if (["demo", "production"].includes(value.APP_ENV) && (!value.NEXT_PUBLIC_SUPABASE_URL || !value.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
-    context.addIssue({ code: "custom", message: "Hosted environments require Supabase configuration." });
+    context.addIssue({ code: "custom", message: "A hosted environment requires Supabase configuration." });
   }
   if (value.APP_ENV === "demo" && new URL(value.APP_ORIGIN).protocol !== "https:") {
     context.addIssue({ code: "custom", path: ["APP_ORIGIN"], message: "Hosted demo requires HTTPS." });
