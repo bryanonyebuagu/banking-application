@@ -1,15 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useState, type FormEvent } from "react";
 import { useFormStatus } from "react-dom";
 import { Alert } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/fields";
 import { PasswordField } from "@/components/ui/password-field";
 import { PASSWORD_REQUIREMENT } from "@/lib/auth/password-policy";
+import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import {
-  forgotPasswordAction,
   loginAction,
   resetPasswordAction,
   signUpAction,
@@ -60,17 +61,73 @@ export function SignUpForm() {
 }
 
 export function ForgotPasswordForm() {
-  const [state, action] = useActionState(forgotPasswordAction, initialState);
-  return <form action={action} className="space-y-5" noValidate>
-    <Message state={state} />
-    <Input name="email" type="email" autoComplete="email" label="Email address" required error={state.fieldErrors?.email?.[0]} />
-    <SubmitButton>Send reset instructions</SubmitButton>
+  const [pending, setPending] = useState(false);
+  const [emailError, setEmailError] = useState<string>();
+  const [notification, setNotification] = useState<{ tone: "success" | "error"; message: string }>();
+
+  useEffect(() => {
+    if (!notification) return;
+    const timer = window.setTimeout(() => setNotification(undefined), 5_000);
+    return () => window.clearTimeout(timer);
+  }, [notification]);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    const emailValue = new FormData(event.currentTarget).get("email");
+    const email = typeof emailValue === "string" ? emailValue.trim().toLowerCase() : "";
+    if (!email || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Enter a valid email address.");
+      setNotification(undefined);
+      return;
+    }
+
+    setPending(true);
+    setEmailError(undefined);
+    setNotification(undefined);
+    try {
+      const supabase = createBrowserSupabaseClient();
+      const result = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      });
+      if (result.error) {
+        console.error(JSON.stringify({ event: "AUTH_RECOVERY_REQUEST_FAILED", providerCode: result.error.code ?? null }));
+        setNotification({
+          tone: "error",
+          message: result.error.code === "over_email_send_rate_limit"
+            ? "Please wait a minute before requesting another reset email."
+            : "We couldn’t send password reset instructions. Try again shortly.",
+        });
+        return;
+      }
+      setNotification({ tone: "success", message: "Password reset instructions have been sent to your email." });
+    } catch (error) {
+      console.error(JSON.stringify({
+        event: "AUTH_RECOVERY_REQUEST_FAILED",
+        errorType: error instanceof Error ? error.name : "UnknownError",
+      }));
+      setNotification({ tone: "error", message: "We couldn’t send password reset instructions. Try again shortly." });
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return <form onSubmit={submit} className="space-y-5" noValidate>
+    {notification && <Alert title={notification.tone === "success" ? "Check your email" : "Unable to continue"} tone={notification.tone}>{notification.message}</Alert>}
+    <Input name="email" type="email" autoComplete="email" label="Email address" required error={emailError} />
+    <Button className="w-full" type="submit" pending={pending}>Send reset instructions</Button>
     <p className="text-center text-sm"><Link className="text-action underline underline-offset-4" href="/login">Return to sign in</Link></p>
   </form>;
 }
 
 export function ResetPasswordForm() {
+  const router = useRouter();
   const [state, action] = useActionState(resetPasswordAction, initialState);
+  useEffect(() => {
+    if (state.status !== "success") return;
+    const timer = window.setTimeout(() => router.replace("/login?message=password-updated"), 1_500);
+    return () => window.clearTimeout(timer);
+  }, [router, state.status]);
   return <form action={action} className="space-y-5" noValidate>
     <Message state={state} />
     <PasswordField name="password" autoComplete="new-password" label="New password" required minLength={10} maxLength={128} hint={PASSWORD_REQUIREMENT} error={state.fieldErrors?.password?.[0]} />

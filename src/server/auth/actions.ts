@@ -98,18 +98,6 @@ export async function signUpAction(_state: AuthActionState = initialState, formD
   };
 }
 
-export async function forgotPasswordAction(_state: AuthActionState = initialState, formData: FormData): Promise<AuthActionState> {
-  void _state;
-  await requireSameOrigin();
-  const parsed = z.object({ email: emailSchema }).safeParse({ email: formValue(formData, "email") });
-  if (!parsed.success) return validationFailure(parsed.error);
-  const supabase = await createServerSupabaseClient();
-  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${environment.APP_ORIGIN}/auth/callback?next=/reset-password`,
-  });
-  return { status: "success", message: "If an account matches that address, we sent password reset instructions." };
-}
-
 export async function resetPasswordAction(_state: AuthActionState = initialState, formData: FormData): Promise<AuthActionState> {
   void _state;
   await requireSameOrigin();
@@ -126,11 +114,22 @@ export async function resetPasswordAction(_state: AuthActionState = initialState
   const claims = await supabase.auth.getClaims();
   if (!claims.data?.claims?.sub) return { status: "error", message: "This reset session has expired. Request a new link." };
   const updated = await supabase.auth.updateUser({ password: parsed.data.password });
-  if (updated.error) return { status: "error", message: "We couldn’t update the password. Request a new link and try again." };
-  await supabase.rpc("record_current_security_event", { p_event_type: "recovery_completed" });
-  await supabase.rpc("revoke_all_current_user_sessions");
-  await supabase.auth.signOut({ scope: "global" });
-  redirect("/login?message=password-updated");
+  if (updated.error || !updated.data.user) {
+    console.error(JSON.stringify({ event: "AUTH_PASSWORD_UPDATE_FAILED", providerCode: updated.error?.code ?? null }));
+    return { status: "error", message: "We couldn’t update the password. Request a new link and try again." };
+  }
+  const audited = await supabase.rpc("record_current_security_event", { p_event_type: "recovery_completed" });
+  const revoked = await supabase.rpc("revoke_all_current_user_sessions");
+  const signedOut = await supabase.auth.signOut({ scope: "global" });
+  if (audited.error || revoked.error || signedOut.error) {
+    console.error(JSON.stringify({
+      event: "AUTH_PASSWORD_UPDATE_CLEANUP_FAILED",
+      auditCode: audited.error?.code ?? null,
+      sessionCode: revoked.error?.code ?? null,
+      providerCode: signedOut.error?.code ?? null,
+    }));
+  }
+  return { status: "success", message: "Your password has been updated successfully." };
 }
 
 export async function logoutAction() {
