@@ -12,11 +12,11 @@ export type PaymentRailCapability = {
 };
 
 const details: Record<PaymentRail, Omit<PaymentRailCapability, "rail" | "status">> = {
-  ach: { name: "ACH and direct deposit", description: "Receive domestic bank transfers and payroll deposits using an assigned account and routing number." },
-  domestic_wire: { name: "Domestic wires", description: "Receive U.S. dollar wires using provider-issued beneficiary instructions." },
-  international_wire: { name: "International wires", description: "Receive supported currencies using provider-issued international wire instructions." },
-  rtp: { name: "Real-time payments", description: "Receive eligible payments over an enabled instant-payment rail." },
-  zelle: { name: "Zelle®", description: "Receive payments after Chaze Bank is approved as a participating financial institution and the customer is enrolled." },
+  ach: { name: "ACH integration", description: "A future approved provider could issue receiving instructions after institutional onboarding." },
+  domestic_wire: { name: "Domestic wire integration", description: "A future approved provider could issue beneficiary instructions after institutional onboarding." },
+  international_wire: { name: "International wire integration", description: "A future approved provider could issue supported-currency instructions after institutional onboarding." },
+  rtp: { name: "Real-time payment integration", description: "A future approved provider could enable an eligible instant-payment rail." },
+  zelle: { name: "Person-to-person payment integration", description: "A supported network would require institutional approval, provider enablement and customer enrollment." },
 };
 
 function enabledRails() {

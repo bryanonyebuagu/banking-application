@@ -14,7 +14,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
   const params = await searchParams;
   const message = params.verified === "true" ? "Email verified. Sign in with the email and password you used to create your account." : messages[params.message ?? ""];
   const isError = params.message === "link-invalid" || params.message === "verification-failed";
-  return <AuthShell title="Sign in" description="Access your Chaze Bank accounts securely.">
+  return <AuthShell title="Sign in" description="Access your Chaze Bank application profile and synthetic account data.">
     {message && <div className="mb-5"><Alert title={message} tone={isError ? "error" : "success"}>{isError && params.reference ? <>Support reference: <code>{params.reference}</code></> : null}</Alert></div>}
     <LoginForm />
   </AuthShell>;

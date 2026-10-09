@@ -1,12 +1,12 @@
 # Project status
 
-Updated: 2026-10-07.
+Updated: 2026-10-09.
 
 ## Current milestone
 
-All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress; TypeScript validation and the production build pass after the Chaze Bank rebrand.
+All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress. The public presentation is being corrected after Google Safe Browsing classified the Vercel deployment as deceptive content.
 
-Current blocker: production banking rails require selection and onboarding of an approved provider. No implementation blocker is known for the existing application.
+Current blockers: production banking rails require selection and onboarding of an approved provider. Google Safe Browsing review must wait until the accurate development/portfolio disclosures are deployed and the site is verified in Google Search Console.
 
 ## Milestone tracking
 

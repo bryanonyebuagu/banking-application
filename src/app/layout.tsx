@@ -7,8 +7,8 @@ export const dynamic = "force-dynamic";
 const openSans = Open_Sans({ subsets: ["latin"], display: "swap", variable: "--font-open-sans" });
 
 export const metadata: Metadata = {
-  title: { default: "Chaze Bank | Personal banking", template: "%s | Chaze Bank" },
-  description: "Manage accounts, payments, cards, lending and investments with Chaze Bank.",
+  title: { default: "Chaze Bank | Banking application portfolio", template: "%s | Chaze Bank" },
+  description: "A development portfolio application demonstrating authentication, account servicing and provider-neutral banking software architecture with synthetic information.",
   robots: { index: false, follow: false },
 };
 
