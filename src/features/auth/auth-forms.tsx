@@ -24,9 +24,9 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
   return <Button className="w-full" type="submit" pending={pending}>{children}</Button>;
 }
 
-function Message({ state }: { state: AuthActionState }) {
+function Message({ state, successTitle = "Check your email" }: { state: AuthActionState; successTitle?: string }) {
   if (!state.message) return null;
-  return <Alert title={state.status === "success" ? "Check your email" : "Unable to continue"} tone={state.status === "success" ? "success" : "error"}>{state.message}</Alert>;
+  return <Alert title={state.status === "success" ? successTitle : "Unable to continue"} tone={state.status === "success" ? "success" : "error"}>{state.message}</Alert>;
 }
 
 export function LoginForm() {
@@ -66,7 +66,7 @@ export function ForgotPasswordForm() {
   const [notification, setNotification] = useState<{ tone: "success" | "error"; message: string }>();
 
   useEffect(() => {
-    if (!notification) return;
+    if (notification?.tone !== "success") return;
     const timer = window.setTimeout(() => setNotification(undefined), 5_000);
     return () => window.clearTimeout(timer);
   }, [notification]);
@@ -88,7 +88,7 @@ export function ForgotPasswordForm() {
     try {
       const supabase = createBrowserSupabaseClient();
       const result = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+        redirectTo: `${window.location.origin}/auth/confirm?type=recovery`,
       });
       if (result.error) {
         console.error(JSON.stringify({ event: "AUTH_RECOVERY_REQUEST_FAILED", providerCode: result.error.code ?? null }));
@@ -100,7 +100,7 @@ export function ForgotPasswordForm() {
         });
         return;
       }
-      setNotification({ tone: "success", message: "Password reset instructions have been sent to your email." });
+      setNotification({ tone: "success", message: "If this address has an account, password reset instructions have been sent. Check your inbox and spam folder." });
     } catch (error) {
       console.error(JSON.stringify({
         event: "AUTH_RECOVERY_REQUEST_FAILED",
@@ -129,7 +129,7 @@ export function ResetPasswordForm() {
     return () => window.clearTimeout(timer);
   }, [router, state.status]);
   return <form action={action} className="space-y-5" noValidate>
-    <Message state={state} />
+    <Message state={state} successTitle="Password updated" />
     <PasswordField name="password" autoComplete="new-password" label="New password" required minLength={10} maxLength={128} hint={PASSWORD_REQUIREMENT} error={state.fieldErrors?.password?.[0]} />
     <PasswordField name="confirmPassword" autoComplete="new-password" label="Confirm new password" required minLength={10} maxLength={128} error={state.fieldErrors?.confirmPassword?.[0]} />
     <SubmitButton>Update password</SubmitButton>

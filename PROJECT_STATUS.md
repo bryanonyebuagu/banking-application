@@ -1,12 +1,22 @@
 # Project status
 
-Updated: 2026-10-09.
+Updated: 2026-10-12.
+
+## Authentication repair in progress
+
+- Production origin is `https://bryobankerz.vercel.app`. Supabase Site URL was corrected from the older Vercel alias on October 10; the production wildcard and localhost redirects were already allowed. Vercel's origin and public Supabase URL matched the intended deployment/project.
+- Google Search Console reported no security issues and Chrome opened the production site on October 10. No browser warning was bypassed.
+- Local fixes preserve refreshed/deleted cookies on redirects, clear rejected app sessions, treat `type=email` as verification followed by sign-in, and route recovery tokens to the new-password form. Existing PKCE callbacks remain supported.
+- The checked-in confirmation template had an invalid query delimiter after the query-free signup redirect. Both checked-in templates now use hashed-token verification. Hosted templates still need to be applied and delivery checked; repository template edits do not update the Supabase dashboard automatically.
+- First/last names are saved as Supabase Auth metadata during signup. Public customer/profile creation remains in the existing onboarding transaction; no trigger, RLS, ledger or customer-data migration was changed.
+- October 10 checks: TypeScript passed; live test-project session/RLS checks passed and removed their fixtures. October 12: TypeScript, lint, 20 focused callback/environment tests and `npm run build` passed. Changes are prepared for the authorized GitHub-triggered Vercel deployment; production behavior still requires verification.
+- Completion is NOT claimed. The full delivered-email/browser journey and mobile/Safari testing remain outstanding. On October 12 the browser tool reported no connected browsers, preventing hosted-template updates and Gmail access. The user approved the dedicated `+authcheck` mailbox test.
 
 ## Current milestone
 
-All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress. The public presentation is being corrected after Google Safe Browsing classified the Vercel deployment as deceptive content.
+All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress. Authentication repair and the real delivered-email journey take priority over other development.
 
-Current blockers: production banking rails require selection and onboarding of an approved provider. Google Safe Browsing review must wait until the accurate development/portfolio disclosures are deployed and the site is verified in Google Search Console.
+Current blockers: the authentication browser/email journey remains unverified and requires the browser connection described above. Production banking rails separately require selection and onboarding of an approved provider.
 
 ## Milestone tracking
 

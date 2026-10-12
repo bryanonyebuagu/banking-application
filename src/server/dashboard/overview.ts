@@ -16,7 +16,11 @@ export async function getDashboardOverview() {
     supabase.from("notifications").select("id,title,body,read_at,created_at").order("created_at",{ascending:false}).limit(3),
   ]);
   const results = [customer,accounts,balances,credit,loans,mortgages,investments,transactions,payments,notifications];
-  if (results.some((result)=>result.error)) throw new Error("DASHBOARD_QUERY_FAILED");
+  const names = ["customer", "accounts", "balances", "credit", "loans", "mortgages", "investments", "transactions", "payments", "notifications"];
+  if (results.some((result)=>result.error)) {
+    console.error(JSON.stringify({ event: "DASHBOARD_QUERY_FAILED", failures: results.flatMap((result, index) => result.error ? [{ query: names[index], code: result.error.code }] : []) }));
+    throw new Error("DASHBOARD_QUERY_FAILED");
+  }
   return {
     customer:customer.data,
     accounts:(accounts.data ?? []).map((account)=>({...account,balance:balances.data?.find((item)=>item.account_id===account.id)??null})),

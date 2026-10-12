@@ -4,18 +4,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 import { environment } from "@/config/server";
 import type { Database } from "@/types/database.generated";
+import { authRedirect, safeAuthDestination } from "@/lib/auth/redirect";
 
 const otpTypes = new Set<EmailOtpType>(["email", "email_change", "invite", "magiclink", "recovery", "signup"]);
 
-function safeNext(value: string | null) {
-  return value && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") ? value : "/dashboard";
-}
-
-function confirmationFailure(reference: string) {
+function confirmationFailure(reference: string, source?: NextResponse) {
   const url = new URL("/login", environment.APP_ORIGIN);
   url.searchParams.set("message", "verification-failed");
   url.searchParams.set("reference", reference);
-  return NextResponse.redirect(url);
+  return authRedirect(url, source);
 }
 
 export async function GET(request: NextRequest) {
@@ -24,12 +21,12 @@ export async function GET(request: NextRequest) {
   const rawType = request.nextUrl.searchParams.get("type");
   const type = rawType && otpTypes.has(rawType as EmailOtpType) ? rawType as EmailOtpType : null;
   const code = request.nextUrl.searchParams.get("code");
-  const isSignupConfirmation = Boolean(code) || type === "signup";
-  const destination = safeNext(request.nextUrl.searchParams.get("next"));
+  const isSignupConfirmation = (Boolean(code) && type !== "recovery") || type === "signup" || type === "email";
+  const destination = type === "recovery" ? "/reset-password" : safeAuthDestination(request.nextUrl.searchParams.get("next"));
   const redirectUrl = isSignupConfirmation
     ? new URL("/login?verified=true", environment.APP_ORIGIN)
     : new URL(`/auth/continue?next=${encodeURIComponent(destination)}`, environment.APP_ORIGIN);
-  const response = NextResponse.redirect(redirectUrl);
+  const response = authRedirect(redirectUrl);
   const cookieJar = new Map(request.cookies.getAll().map(({ name, value }) => [name, value]));
   const supabase = createServerClient<Database>(
     environment.NEXT_PUBLIC_SUPABASE_URL!,
@@ -61,7 +58,7 @@ export async function GET(request: NextRequest) {
         providerCode: confirmed?.error?.code ?? null,
         flow: code ? "pkce" : tokenHash ? "token_hash" : "missing",
       }));
-      return confirmationFailure(reference);
+      return confirmationFailure(reference, response);
     }
     if (isSignupConfirmation) {
       const signedOut = await supabase.auth.signOut({ scope: "local" });
@@ -72,7 +69,7 @@ export async function GET(request: NextRequest) {
           stage: "session_clear",
           providerCode: signedOut.error.code ?? null,
         }));
-        return confirmationFailure(reference);
+        return confirmationFailure(reference, response);
       }
       console.info(JSON.stringify({
         event: "AUTH_EMAIL_CONFIRMED",
@@ -90,7 +87,7 @@ export async function GET(request: NextRequest) {
         sessionCode: synced.error.code ?? null,
       }));
       await supabase.auth.signOut({ scope: "local" });
-      return confirmationFailure(reference);
+      return confirmationFailure(reference, response);
     }
     const audited = await supabase.rpc("record_current_login_event", { p_event_type: "login" });
     if (audited.error) {
@@ -104,6 +101,6 @@ export async function GET(request: NextRequest) {
       stage: "unexpected",
       errorType: error instanceof Error ? error.name : "UnknownError",
     }));
-    return confirmationFailure(reference);
+    return confirmationFailure(reference, response);
   }
 }

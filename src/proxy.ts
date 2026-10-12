@@ -1,8 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/types/database.generated";
+import { authRedirect } from "@/lib/auth/redirect";
 
-const protectedPaths = ["/accounts", "/analytics", "/bill-pay", "/cards", "/check-deposit", "/dashboard", "/investments", "/loans", "/mortgages", "/notifications", "/register", "/reset-password", "/security-center", "/settings", "/staff", "/statements", "/support", "/transactions", "/transfers"];
+const protectedPaths = ["/accounts", "/analytics", "/bill-pay", "/cards", "/check-deposit", "/dashboard", "/investments", "/loans", "/mortgages", "/notifications", "/register", "/receive-money", "/reset-password", "/security-center", "/settings", "/staff", "/statements", "/support", "/transactions", "/transfers"];
 const anonymousPaths = ["/login", "/sign-up", "/forgot-password"];
 
 export async function proxy(request: NextRequest) {
@@ -11,11 +12,14 @@ export async function proxy(request: NextRequest) {
   if (!url || !key) return NextResponse.next({ request });
   let response = NextResponse.next({ request });
   const supabase = createServerClient<Database>(url, key, {
+    cookieOptions: { path: "/", sameSite: "lax", secure: request.nextUrl.protocol === "https:" },
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (cookiesToSet) => {
         for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
+        const previous = response;
         response = NextResponse.next({ request });
+        for (const cookie of previous.cookies.getAll()) response.cookies.set(cookie);
         for (const { name, value, options } of cookiesToSet) response.cookies.set(name, value, options);
       },
     },
@@ -31,7 +35,8 @@ export async function proxy(request: NextRequest) {
       const destination = request.nextUrl.clone();
       destination.pathname = "/login";
       destination.search = "?message=session-required";
-      return NextResponse.redirect(destination);
+      await supabase.auth.signOut({ scope: "local" });
+      return authRedirect(destination, response);
     }
   }
   if (isProtected && !signedIn) {
@@ -39,16 +44,17 @@ export async function proxy(request: NextRequest) {
     const destination = request.nextUrl.clone();
     destination.pathname = "/login";
     destination.search = "?message=session-required";
-    return NextResponse.redirect(destination);
+    return authRedirect(destination, response);
   }
   const rejectedSession = request.nextUrl.pathname === "/login" && request.nextUrl.searchParams.get("message") === "session-required";
   if (signedIn && anonymousPaths.includes(request.nextUrl.pathname) && !rejectedSession) {
     const destination = request.nextUrl.clone();
     destination.pathname = "/dashboard";
     destination.search = "";
-    return NextResponse.redirect(destination);
+    return authRedirect(destination, response);
   }
+  response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
 
-export const config = { matcher: ["/accounts/:path*", "/analytics/:path*", "/bill-pay/:path*", "/cards/:path*", "/check-deposit/:path*", "/dashboard/:path*", "/investments/:path*", "/loans/:path*", "/mortgages/:path*", "/notifications/:path*", "/register/:path*", "/reset-password", "/security-center/:path*", "/settings/:path*", "/staff/:path*", "/statements/:path*", "/support/:path*", "/transactions/:path*", "/transfers/:path*", "/login", "/sign-up", "/forgot-password"] };
+export const config = { matcher: ["/accounts/:path*", "/analytics/:path*", "/bill-pay/:path*", "/cards/:path*", "/check-deposit/:path*", "/dashboard/:path*", "/investments/:path*", "/loans/:path*", "/mortgages/:path*", "/notifications/:path*", "/register/:path*", "/receive-money/:path*", "/reset-password", "/security-center/:path*", "/settings/:path*", "/staff/:path*", "/statements/:path*", "/support/:path*", "/transactions/:path*", "/transfers/:path*", "/login", "/sign-up", "/forgot-password"] };

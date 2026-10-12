@@ -48,7 +48,14 @@ export async function loginAction(_state: AuthActionState = initialState, formDa
       auditCode: audited?.error?.code ?? null,
     }));
     await supabase.auth.signOut({ scope: "local" });
-    return { status: "error", message: "We couldn’t sign you in. Check your details or try again shortly." };
+    return {
+      status: "error",
+      message: signedIn.error?.code === "email_not_confirmed"
+        ? "Verify your email before signing in. Check your inbox and spam folder."
+        : signedIn.error?.code === "invalid_credentials"
+          ? "The email or password is incorrect. Try again or reset your password."
+          : "Sign-in is temporarily unavailable. Please try again shortly.",
+    };
   }
   redirect("/dashboard");
 }

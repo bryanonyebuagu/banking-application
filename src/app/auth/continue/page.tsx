@@ -1,9 +1,6 @@
 import { AuthContinue } from "@/features/auth/auth-continue";
-
-function safeNext(value: string | undefined) {
-  return value && value.startsWith("/") && !value.startsWith("//") && !value.includes("\\") ? value : "/dashboard";
-}
+import { safeAuthDestination } from "@/lib/auth/redirect";
 
 export default async function AuthContinuePage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
-  return <AuthContinue destination={safeNext((await searchParams).next)} />;
+  return <AuthContinue destination={safeAuthDestination((await searchParams).next)} />;
 }

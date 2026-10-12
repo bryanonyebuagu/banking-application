@@ -10,5 +10,6 @@ export function AuthContinue({ destination }: { destination: string }) {
   }, [destination]);
   return <main id="main-content" className="mx-auto w-full max-w-lg px-4 py-16 text-center">
     <Spinner label="Finishing secure sign-in" />
+    <p className="mt-4"><a href={destination} className="text-action underline">Continue</a></p>
   </main>;
 }
