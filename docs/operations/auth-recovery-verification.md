@@ -39,3 +39,11 @@ The October 10 audit confirmed configured Brevo SMTP and matching Vercel/Supabas
 - `PROJECT_STATUS.md` and this document: evidence, limitations and hosted configuration steps.
 
 No database migrations, ledger operations, payment integrations, passwords, SMTP credentials or service-role credentials were changed. A successful compiler/build or mocked test is not proof that a real user can receive an email and reach the dashboard.
+
+## October 12 live evidence
+
+Commit `b91b2e0` was pushed to main. The Vercel commit status reported “Deployment has completed”; `/auth/confirm` returned the newly added private/no-store and no-referrer headers. TypeScript, lint, 20 focused regression tests and the production build passed.
+
+Both hosted templates were saved in the Supabase dashboard. On the deployed signup form, a short password produced the expected validation error. A valid submission displayed the pending-verification state. Gmail received the new confirmation message, and a read-only database query confirmed both name fields persisted in Auth metadata.
+
+The test account was confirmed at 07:19:30 UTC, thirty seconds after signup, before the agent clicked the verification link. This is an observation, not proof of a particular email scanner or a confirmed callback defect. A user may have followed the link independently. The browser connection subsequently disappeared. Login, dashboard persistence, recovery delivery and final password update have not been verified end-to-end; no completion claim is justified yet.
