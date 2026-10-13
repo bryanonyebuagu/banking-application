@@ -268,6 +268,14 @@ Latest authentication and customer-experience reliability work on 2026-10-13:
 - Added three original optimized banking/lifestyle images and responsive imagery to shared public product and authentication pages. No third-party banking logos or protected imagery were added.
 - Validation passed: TypeScript, lint with zero warnings, 24 unit tests, the optimized production build, and 1440 px/390 px guest rendering checks with no horizontal overflow.
 
+Latest public hero experience work on 2026-10-13:
+
+- Added one reusable full-bleed hero carousel for the homepage and shared product pages, with a dominant Chaze Bank blue layer blending continuously into right-aligned photography.
+- Added 18 distinct optimized WebP hero images across Homepage, Checking, Savings, Credit Cards, Mortgage, Auto Financing, Investing, Education and Security. Savings and Security now use separate purpose-built collections.
+- Added six-second autoplay, synchronized copy/image fades, pagination, previous/next controls, interaction pause, mobile swipe, fixed hero dimensions and reduced-motion behavior.
+- Preserved server-selected authenticated and guest actions, so carousel slides do not reintroduce sign-in or registration prompts for authenticated customers.
+- Validation passed: TypeScript, lint with zero warnings, 33 unit tests, optimized production build, autoplay/manual-pause/reduced-motion/swipe browser assertions, all eight requested product routes and desktop/mobile overflow checks.
+
 ## Next exact action
 
-Deploy the validated commit through the existing GitHub-to-Vercel integration, then run the real production registration, verification, onboarding, logout/login and recovery journey with independent inboxes. Do not mark multi-inbox delivery complete until those inboxes and authenticated dashboards have been observed.
+Deploy the validated carousel commit through the existing GitHub-to-Vercel integration and repeat the responsive carousel assertions against production. The separate three-inbox authentication acceptance run remains outstanding until those inboxes and authenticated dashboards have been observed.

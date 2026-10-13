@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { HeroCarousel } from "@/components/marketing/hero-carousel";
+import { homeHeroSlides, withHeroActions } from "@/features/public-site/hero-content";
 import { getVerifiedIdentity } from "@/server/auth/identity";
 
 type IconName = "checking" | "savings" | "card" | "home" | "travel" | "business";
@@ -27,17 +29,11 @@ function ProductIcon({ name }: { name: IconName }) {
 
 export default async function HomePage() {
   const identity = await getVerifiedIdentity();
+  const heroActions = identity
+    ? [{ label: "Go to Dashboard", href: "/dashboard" }, { label: "My Profile", href: "/settings", variant: "secondary" as const }]
+    : [{ label: "Create an Account", href: "/sign-up" }, { label: "Sign in", href: "/login", variant: "secondary" as const }];
   return <main id="main-content">
-    <section className="relative isolate min-h-[560px] overflow-hidden bg-[#eaf3fb]">
-      <Image src="/images/bank-hero-v1.png" alt="A couple managing their finances together at home" fill priority className="object-cover object-[64%_center]" sizes="100vw" />
-      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 to-white/0 lg:via-white/75" />
-      <div className="relative mx-auto flex min-h-[560px] max-w-public items-center px-4 py-16 sm:px-6 lg:px-8"><div className="max-w-xl">
-        <p className="text-sm font-bold uppercase tracking-[0.16em] text-action">Banking software portfolio</p>
-        <h1 className="mt-4 text-4xl font-semibold leading-[1.08] text-ink sm:text-6xl">Explore a complete digital banking experience.</h1>
-        <p className="mt-6 max-w-lg text-lg leading-8 text-muted">Review secure account servicing, cards, lending and money-movement workflows using synthetic application data.</p>
-        <div className="mt-8 flex flex-wrap gap-3">{identity?<><Link className="inline-flex min-h-12 items-center rounded-control bg-action px-6 py-3 font-semibold text-white shadow-sm hover:bg-action-hover" href="/dashboard">Go to Dashboard</Link><Link className="inline-flex min-h-12 items-center rounded-control border-2 border-action bg-white/90 px-6 py-3 font-semibold text-action" href="/settings">My Profile</Link></>:<><Link className="inline-flex min-h-12 items-center rounded-control bg-action px-6 py-3 font-semibold text-white shadow-sm hover:bg-action-hover" href="/sign-up">Create an Account</Link><Link className="inline-flex min-h-12 items-center rounded-control border-2 border-action bg-white/90 px-6 py-3 font-semibold text-action" href="/login">Sign in</Link></>}</div>
-      </div></div>
-    </section>
+    <HeroCarousel label="Featured Chaze Bank services" slides={withHeroActions(homeHeroSlides, heroActions)} />
 
     <section className="border-b border-border bg-white" aria-labelledby="products-heading"><div className="mx-auto max-w-public px-4 py-14 sm:px-6 lg:px-8">
       <h2 id="products-heading" className="text-center text-3xl font-semibold">What can we help you find?</h2>
