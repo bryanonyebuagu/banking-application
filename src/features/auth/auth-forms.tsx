@@ -56,6 +56,7 @@ export function SignUpForm() {
     </div>
     <Input name="email" type="email" autoComplete="email" label="Email address" required error={state.fieldErrors?.email?.[0]} />
     <PasswordField name="password" autoComplete="new-password" label="Password" required minLength={10} maxLength={128} hint={PASSWORD_REQUIREMENT} error={state.fieldErrors?.password?.[0]} />
+    <PasswordField name="confirmPassword" autoComplete="new-password" label="Confirm password" required minLength={10} maxLength={128} error={state.fieldErrors?.confirmPassword?.[0]} />
     <SubmitButton>Create account</SubmitButton>
   </form>;
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { AppChrome } from "@/components/layout/app-chrome";
+import { getVerifiedIdentity } from "@/server/auth/identity";
 import "@/styles/globals.css";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +13,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" className={openSans.variable}><body className="flex min-h-dvh flex-col"><a className="sr-only z-50 bg-surface p-4 focus:not-sr-only focus:fixed focus:left-4 focus:top-4" href="#main-content">Skip to main content</a><AppChrome>{children}</AppChrome></body></html>;
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const identity = await getVerifiedIdentity();
+  const viewer = identity ? { firstName: identity.firstName } : null;
+  return <html lang="en" className={openSans.variable}><body className="flex min-h-dvh flex-col"><a className="sr-only z-50 bg-surface p-4 focus:not-sr-only focus:fixed focus:left-4 focus:top-4" href="#main-content">Skip to main content</a><AppChrome viewer={viewer}>{children}</AppChrome></body></html>;
 }

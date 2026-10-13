@@ -1,4 +1,8 @@
 <h2>Reset your Chaze Bank password</h2>
 <p>Use the secure link below to choose a new password for your Chaze Bank account.</p>
-<p><a href="{{ if .RedirectTo }}{{ .RedirectTo }}{{ else }}{{ .SiteURL }}/auth/confirm?type=recovery{{ end }}&amp;token_hash={{ .TokenHash }}">Reset password</a></p>
+{{ if .RedirectTo }}
+<p><a href="{{ .RedirectTo }}&amp;token_hash={{ .TokenHash }}">Reset password</a></p>
+{{ else }}
+<p><a href="{{ .SiteURL }}/auth/confirm?type=recovery&amp;token_hash={{ .TokenHash }}">Reset password</a></p>
+{{ end }}
 <p>If you did not request this change, you can ignore this message.</p>

@@ -258,6 +258,16 @@ Latest production-banking integration work on 2026-10-06:
 - The user explicitly paused all tests, lint, type-check, build, audit and browser runs after Milestone B work began. Features added afterward are implemented and migrated but have no recorded verification result.
 - The deterministic demo dataset has not been executed because its three private login/password pairs have not been configured in ignored `.env.local`.
 
+Latest authentication and customer-experience reliability work on 2026-10-13:
+
+- Confirmed that password recovery and login target the same hosted Supabase project. The reproducible `invalid_credentials` result came from resetting the distinct `c.bryanonyebuagu+authcheck@gmail.com` identity and then attempting to sign in as `c.bryanonyebuagu@gmail.com`; Supabase rejected the credentials before the application session or dashboard code ran.
+- Signup now collects and validates a matching confirmation password, preserves the password exactly as entered, and keeps first/last name metadata attached to the new Supabase identity.
+- Global public navigation and homepage/product actions now render from verified server-side session state. Signed-in customers see dashboard, account/profile and sign-out actions without a guest-state flash.
+- The proxy refreshes Supabase sessions on public as well as protected routes while excluding framework and image assets. Registration data-load failures now fail visibly instead of appearing as an empty onboarding record.
+- The recovery email template was corrected so `token_hash` is never rendered in an ambiguous URL-template context. Brevo custom SMTP is active, and Vercel production now explicitly declares `APP_ENV=production` and `AUTH_EMAIL_DELIVERY=custom-smtp`.
+- Added three original optimized banking/lifestyle images and responsive imagery to shared public product and authentication pages. No third-party banking logos or protected imagery were added.
+- Validation passed: TypeScript, lint with zero warnings, 24 unit tests, the optimized production build, and 1440 px/390 px guest rendering checks with no horizontal overflow.
+
 ## Next exact action
 
-When the user authorizes testing again, run the final integrated quality gates and all-width visual/accessibility review. Demo seeding is optional and requires local ignored credentials.
+Deploy the validated commit through the existing GitHub-to-Vercel integration, then run the real production registration, verification, onboarding, logout/login and recovery journey with independent inboxes. Do not mark multi-inbox delivery complete until those inboxes and authenticated dashboards have been observed.

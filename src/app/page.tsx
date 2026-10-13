@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getVerifiedIdentity } from "@/server/auth/identity";
 
 type IconName = "checking" | "savings" | "card" | "home" | "travel" | "business";
 
@@ -24,7 +25,8 @@ function ProductIcon({ name }: { name: IconName }) {
   </svg>;
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const identity = await getVerifiedIdentity();
   return <main id="main-content">
     <section className="relative isolate min-h-[560px] overflow-hidden bg-[#eaf3fb]">
       <Image src="/images/bank-hero-v1.png" alt="A couple managing their finances together at home" fill priority className="object-cover object-[64%_center]" sizes="100vw" />
@@ -33,7 +35,7 @@ export default function HomePage() {
         <p className="text-sm font-bold uppercase tracking-[0.16em] text-action">Banking software portfolio</p>
         <h1 className="mt-4 text-4xl font-semibold leading-[1.08] text-ink sm:text-6xl">Explore a complete digital banking experience.</h1>
         <p className="mt-6 max-w-lg text-lg leading-8 text-muted">Review secure account servicing, cards, lending and money-movement workflows using synthetic application data.</p>
-        <div className="mt-8 flex flex-wrap gap-3"><Link className="inline-flex min-h-12 items-center rounded-control bg-action px-6 py-3 font-semibold text-white shadow-sm hover:bg-action-hover" href="/sign-up">Create a demo account</Link><Link className="inline-flex min-h-12 items-center rounded-control border-2 border-action bg-white/90 px-6 py-3 font-semibold text-action" href="/login">Sign in</Link></div>
+        <div className="mt-8 flex flex-wrap gap-3">{identity?<><Link className="inline-flex min-h-12 items-center rounded-control bg-action px-6 py-3 font-semibold text-white shadow-sm hover:bg-action-hover" href="/dashboard">Go to Dashboard</Link><Link className="inline-flex min-h-12 items-center rounded-control border-2 border-action bg-white/90 px-6 py-3 font-semibold text-action" href="/settings">My Profile</Link></>:<><Link className="inline-flex min-h-12 items-center rounded-control bg-action px-6 py-3 font-semibold text-white shadow-sm hover:bg-action-hover" href="/sign-up">Create an Account</Link><Link className="inline-flex min-h-12 items-center rounded-control border-2 border-action bg-white/90 px-6 py-3 font-semibold text-action" href="/login">Sign in</Link></>}</div>
       </div></div>
     </section>
 
@@ -50,6 +52,6 @@ export default function HomePage() {
       </div>
     </section>
 
-    <section className="bg-brand text-white"><div className="mx-auto grid max-w-public items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8"><div><p className="text-sm font-bold uppercase tracking-[0.16em] text-white/75">Chaze Bank application</p><h2 className="mt-3 text-3xl font-semibold">Explore the authenticated product experience</h2><p className="mt-3 max-w-2xl text-white/85">View synthetic balances and workflows for transfers, cards, statements and account security. No real financial transaction is initiated.</p></div><Link className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-brand" href="/login">Sign in to the demo</Link></div></section>
+    <section className="bg-brand text-white"><div className="mx-auto grid max-w-public items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-[1fr_auto] lg:px-8"><div><p className="text-sm font-bold uppercase tracking-[0.16em] text-white/75">Chaze Bank application</p><h2 className="mt-3 text-3xl font-semibold">{identity?`Welcome back${identity.firstName?`, ${identity.firstName}`:""}`:"Explore the authenticated product experience"}</h2><p className="mt-3 max-w-2xl text-white/85">View synthetic balances and workflows for transfers, cards, statements and account security. No real financial transaction is initiated.</p></div><Link className="inline-flex min-h-12 items-center justify-center rounded-control bg-white px-6 py-3 font-semibold text-brand" href={identity?"/dashboard":"/login"}>{identity?"View Dashboard":"Sign in"}</Link></div></section>
   </main>;
 }

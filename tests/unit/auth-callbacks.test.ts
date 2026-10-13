@@ -82,6 +82,12 @@ describe("confirmation and recovery cookies", () => {
     expect(response.headers.get("location")).toBe("https://bryobankerz.vercel.app/dashboard");
     expect(response.cookies.get("auth-session")?.value).toBe("refreshed");
   });
+  it("refreshes the session cookie while a signed-in user visits a public page", async () => {
+    const response = await proxy(new NextRequest("https://bryobankerz.vercel.app/checking"));
+    expect(response.headers.get("location")).toBeNull();
+    expect(response.cookies.get("auth-session")?.value).toBe("refreshed");
+    expect(response.headers.get("cache-control")).toContain("no-store");
+  });
   it("clears a rejected app session instead of looping to the dashboard", async () => {
     provider.rpc.mockResolvedValue({ error: { code: "42501" } });
     const response = await proxy(new NextRequest("https://bryobankerz.vercel.app/dashboard"));

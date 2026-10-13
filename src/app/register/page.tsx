@@ -15,11 +15,21 @@ const incomeLabels: Record<string,string> = { under_25000:"Under $25,000", "2500
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ step?: string; message?: string; result?: string }> }) {
   const identity = await requireVerifiedIdentity();
   const supabase = await createServerSupabaseClient();
-  const [{ data: customer }, { data: draft }, params] = await Promise.all([
+  const [customerResult, draftResult, params] = await Promise.all([
     supabase.from("customers").select("id,first_name,middle_name,last_name,contact_email,phone,date_of_birth,employment,income_range,verification_status").maybeSingle(),
     supabase.from("registration_drafts").select("first_name,middle_name,last_name,date_of_birth,phone,line1,line2,city,state,postal_code,country,employment,income_range,current_step").maybeSingle(),
     searchParams,
   ]);
+  if (customerResult.error || draftResult.error) {
+    console.error(JSON.stringify({
+      event: "REGISTRATION_STATE_LOAD_FAILED",
+      customerCode: customerResult.error?.code ?? null,
+      draftCode: draftResult.error?.code ?? null,
+    }));
+    throw new Error("REGISTRATION_STATE_LOAD_FAILED");
+  }
+  const customer = customerResult.data;
+  const draft = draftResult.data;
   const requested = steps.includes(params.step as Step) ? params.step as Step : null;
   if (customer?.verification_status === "verified" && requested !== "verification") redirect("/dashboard");
   let step: Step;

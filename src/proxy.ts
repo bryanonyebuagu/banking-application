@@ -57,4 +57,6 @@ export async function proxy(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/accounts/:path*", "/analytics/:path*", "/bill-pay/:path*", "/cards/:path*", "/check-deposit/:path*", "/dashboard/:path*", "/investments/:path*", "/loans/:path*", "/mortgages/:path*", "/notifications/:path*", "/register/:path*", "/receive-money/:path*", "/reset-password", "/security-center/:path*", "/settings/:path*", "/staff/:path*", "/statements/:path*", "/support/:path*", "/transactions/:path*", "/transfers/:path*", "/login", "/sign-up", "/forgot-password"] };
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)"],
+};

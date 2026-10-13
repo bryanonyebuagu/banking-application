@@ -44,6 +44,7 @@ export async function loginAction(_state: AuthActionState = initialState, formDa
     console.error(JSON.stringify({
       event: "AUTH_LOGIN_FAILED",
       providerCode: signedIn.error?.code ?? null,
+      providerStatus: signedIn.error?.status ?? null,
       sessionCode: synced?.error?.code ?? null,
       auditCode: audited?.error?.code ?? null,
     }));
@@ -68,11 +69,15 @@ export async function signUpAction(_state: AuthActionState = initialState, formD
     lastName: nameSchema("last name"),
     email: emailSchema,
     password: passwordSchema,
+    confirmPassword: z.string(),
+  }).superRefine((value, context) => {
+    if (value.password !== value.confirmPassword) context.addIssue({ code: "custom", path: ["confirmPassword"], message: "Passwords must match." });
   }).safeParse({
     firstName: formValue(formData, "firstName"),
     lastName: formValue(formData, "lastName"),
     email: formValue(formData, "email"),
     password: formValue(formData, "password"),
+    confirmPassword: formValue(formData, "confirmPassword"),
   });
   if (!parsed.success) return validationFailure(parsed.error);
   const supabase = await createServerSupabaseClient();
