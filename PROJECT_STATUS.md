@@ -229,6 +229,14 @@ Latest Milestone A check-deposit and statement evidence on 2026-09-30:
 
 ## Known issues and decisions
 
+Latest authenticated-dashboard navigation refinement on 2026-10-14:
+
+- Replaced the narrow horizontal dashboard link strip with a responsive two-, three- and five-column banking-service grid for Accounts, Transactions, Receive money, Bill Pay, Cards, Statements, Loans, Mortgages, Investments and Analytics.
+- Added original Chaze Bank line icons, dimensional blue icon blocks, raised card surfaces and accessible hover, press, keyboard-focus and reduced-motion states.
+- Moved Notifications and Settings into compact controls at the far right of the dashboard header. Security remains available from the session-security panel, and Support now has a dedicated section at the bottom of the dashboard.
+- Preserved all existing destinations, account data, quick actions, deposit and withdrawal features, session controls and mobile behavior.
+- TypeScript validation, lint with zero warnings, all 36 unit tests and the optimized production build pass. No deployment was performed.
+
 Latest account-opening refinement on 2026-10-07:
 
 - Signup now collects first and last name with the email and password and stores the names in signed Supabase user metadata.
