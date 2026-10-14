@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/types/database.generated";
 import { authRedirect } from "@/lib/auth/redirect";
 
-const protectedPaths = ["/accounts", "/analytics", "/bill-pay", "/cards", "/check-deposit", "/dashboard", "/investments", "/loans", "/mortgages", "/notifications", "/register", "/receive-money", "/reset-password", "/security-center", "/settings", "/staff", "/statements", "/support", "/transactions", "/transfers"];
+const protectedPaths = ["/accounts", "/analytics", "/bill-pay", "/cards", "/check-deposit", "/dashboard", "/investments", "/loans", "/mortgages", "/notifications", "/register", "/receive-money", "/reset-password", "/security-center", "/settings", "/staff", "/statements", "/support", "/transactions", "/transfers", "/withdraw"];
 const anonymousPaths = ["/login", "/sign-up", "/forgot-password"];
 
 export async function proxy(request: NextRequest) {

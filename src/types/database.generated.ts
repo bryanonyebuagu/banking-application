@@ -554,16 +554,22 @@ isOneToOne: false
                   ]
                 },"payment_collections": {
                   Row: {
-                    "amount_minor": number,"authorization_url": string | null,"channel": string,"created_at": string,"currency": string,"customer_id": string,"failure_code": string | null,"id": string,"paid_at": string | null,"provider": string,"provider_reference": string,"provider_transaction_id": number | null,"status": string,"updated_at": string
+                    "account_id": string | null,"amount_minor": number,"authorization_url": string | null,"channel": string,"created_at": string,"currency": string,"customer_id": string,"failure_code": string | null,"id": string,"journal_id": string | null,"paid_at": string | null,"provider": string,"provider_reference": string,"provider_transaction_id": number | null,"status": string,"updated_at": string
                   }
                   Insert: {
-                    "amount_minor": number,"authorization_url"?: string | null,"channel": string,"created_at"?: string,"currency": string,"customer_id": string,"failure_code"?: string | null,"id"?: string,"paid_at"?: string | null,"provider"?: string,"provider_reference": string,"provider_transaction_id"?: number | null,"status"?: string,"updated_at"?: string
+                    "account_id"?: string | null,"amount_minor": number,"authorization_url"?: string | null,"channel": string,"created_at"?: string,"currency": string,"customer_id": string,"failure_code"?: string | null,"id"?: string,"journal_id"?: string | null,"paid_at"?: string | null,"provider"?: string,"provider_reference": string,"provider_transaction_id"?: number | null,"status"?: string,"updated_at"?: string
                   }
                   Update: {
-                    "amount_minor"?: number,"authorization_url"?: string | null,"channel"?: string,"created_at"?: string,"currency"?: string,"customer_id"?: string,"failure_code"?: string | null,"id"?: string,"paid_at"?: string | null,"provider"?: string,"provider_reference"?: string,"provider_transaction_id"?: number | null,"status"?: string,"updated_at"?: string
+                    "account_id"?: string | null,"amount_minor"?: number,"authorization_url"?: string | null,"channel"?: string,"created_at"?: string,"currency"?: string,"customer_id"?: string,"failure_code"?: string | null,"id"?: string,"journal_id"?: string | null,"paid_at"?: string | null,"provider"?: string,"provider_reference"?: string,"provider_transaction_id"?: number | null,"status"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "payment_collections_account_fkey"
+      columns: ["account_id","customer_id","currency"]
+isOneToOne: false
+      referencedRelation: "accounts"
+      referencedColumns: ["id","customer_id","currency"]
+    },{
       foreignKeyName: "payment_collections_customer_id_fkey"
       columns: ["customer_id"]
 isOneToOne: false
@@ -600,6 +606,31 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "payees"
       referencedColumns: ["id","customer_id"]
+    }
+                  ]
+                },"payout_withdrawals": {
+                  Row: {
+                    "account_id": string,"amount_minor": number,"bank_name": string,"beneficiary_name": string,"completed_at": string | null,"created_at": string,"currency": string,"customer_id": string,"failure_code": string | null,"hold_id": string,"id": string,"journal_id": string | null,"masked_destination": string,"provider": string,"provider_reference": string,"provider_transfer_code": string | null,"provider_transfer_id": number | null,"recipient_code": string | null,"status": string,"updated_at": string
+                  }
+                  Insert: {
+                    "account_id": string,"amount_minor": number,"bank_name": string,"beneficiary_name": string,"completed_at"?: string | null,"created_at"?: string,"currency": string,"customer_id": string,"failure_code"?: string | null,"hold_id": string,"id"?: string,"journal_id"?: string | null,"masked_destination": string,"provider"?: string,"provider_reference": string,"provider_transfer_code"?: string | null,"provider_transfer_id"?: number | null,"recipient_code"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "account_id"?: string,"amount_minor"?: number,"bank_name"?: string,"beneficiary_name"?: string,"completed_at"?: string | null,"created_at"?: string,"currency"?: string,"customer_id"?: string,"failure_code"?: string | null,"hold_id"?: string,"id"?: string,"journal_id"?: string | null,"masked_destination"?: string,"provider"?: string,"provider_reference"?: string,"provider_transfer_code"?: string | null,"provider_transfer_id"?: number | null,"recipient_code"?: string | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payout_withdrawals_account_id_customer_id_currency_fkey"
+      columns: ["account_id","customer_id","currency"]
+isOneToOne: false
+      referencedRelation: "accounts"
+      referencedColumns: ["id","customer_id","currency"]
+    },{
+      foreignKeyName: "payout_withdrawals_customer_id_fkey"
+      columns: ["customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["id"]
     }
                   ]
                 },"profiles": {
@@ -876,11 +907,19 @@ isOneToOne: false
 "configure_paystack_collection":
 { Args: { "p_authorization_url": string,"p_collection_id": string }; Returns: undefined
                            },
+"configure_paystack_withdrawal":
+{ Args: { "p_recipient_code": string,"p_transfer_code": string,"p_transfer_id": number,"p_withdrawal_id": string }; Returns: undefined
+                           },
 "create_current_payee":
 { Args: { "p_name": string,"p_synthetic_reference": string }; Returns: string
                            },
 "create_current_payment_collection":
-{ Args: { "p_amount_minor": number,"p_channel": string,"p_currency": string,"p_reference": string }; Returns: string
+{ Args: { "p_account_id": string,"p_amount_minor": number,"p_channel": string,"p_currency": string,"p_reference": string }; Returns: string
+                           },
+"create_current_paystack_withdrawal":
+{ Args: { "p_account_id": string,"p_amount_minor": number,"p_bank_name": string,"p_beneficiary_name": string,"p_currency": string,"p_masked_destination": string,"p_reference": string }; Returns: {
+              "hold_id": string,"withdrawal_id": string
+            }[]
                            },
 "create_current_support_ticket":
 { Args: { "p_body": string,"p_subject": string }; Returns: string
@@ -899,6 +938,9 @@ isOneToOne: false
                            },
 "fail_paystack_collection":
 { Args: { "p_collection_id": string,"p_failure_code": string }; Returns: undefined
+                           },
+"fail_paystack_withdrawal":
+{ Args: { "p_failure_code": string,"p_withdrawal_id": string }; Returns: undefined
                            },
 "finalize_current_check_upload":
 { Args: { "p_deposit_id": string }; Returns: undefined
@@ -961,6 +1003,8 @@ isOneToOne: false
                            },
 "open_current_account":
 { Args: { "p_account_type": string,"p_nickname": string }; Returns: string
+                           } |
+{ Args: { "p_account_type": string,"p_currency": string,"p_nickname": string }; Returns: string
                            },
 "open_current_credit_card":
 { Args: { "p_cardholder": string,"p_credit_limit_minor": number,"p_idempotency_key": string }; Returns: string
@@ -995,6 +1039,9 @@ isOneToOne: false
                            },
 "process_paystack_event":
 { Args: { "p_amount_minor": number,"p_currency": string,"p_event_key": string,"p_event_type": string,"p_paid_at": string,"p_payload_hash": string,"p_provider_transaction_id": number,"p_reference": string }; Returns: string
+                           },
+"process_paystack_transfer_event":
+{ Args: { "p_amount_minor": number,"p_currency": string,"p_event_key": string,"p_event_type": string,"p_payload_hash": string,"p_provider_transfer_id": number,"p_reference": string }; Returns: string
                            },
 "record_current_login_event":
 { Args: { "p_event_type": string }; Returns: string

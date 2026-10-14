@@ -18,7 +18,7 @@ Updated: 2026-10-14.
 
 All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress. Authentication repair and the real delivered-email journey take priority over other development.
 
-On October 14, the provider-neutral payment boundary gained a Paystack merchant-collection implementation: hosted checkout initialization, exact minor-unit amounts, signed/idempotent webhook processing, provider verification callbacks and a customer payment form. The migration has passed a clean application on the separate hosted test project. Live checkout remains fail-closed until Paystack live credentials and merchant/channel activation are configured; customer deposit balances are not credited from merchant receipts.
+On October 14, the provider-neutral payment boundary gained Paystack account deposits and NGN withdrawals. Dashboard tiles use original Chaze Bank deposit/withdrawal icons. Deposits post to the selected same-currency account only after a signed, amount-matched `charge.success`. Withdrawals require AAL2, resolve the destination through Paystack, place a balance hold first, store only a masked destination, and settle/release/reverse from signed transfer events. Live operations remain fail-closed until Paystack live credentials, merchant channels, Transfers and settlement configuration are active.
 
 Current blockers: the authentication browser/email journey remains unverified and requires the browser connection described above. Production banking rails separately require selection and onboarding of an approved provider.
 
@@ -119,8 +119,13 @@ Applied to hosted development, in order:
 31. `20261004000900_support.sql`
 32. `20261004001000_staff_administration.sql`
 33. `20261014000100_paystack_collections.sql`
+34. `20261014000200_provider_deposit_posting.sql`
+35. `20261014000300_paystack_withdrawals.sql`
+36. `20261014000400_paystack_withdrawal_reversals.sql`
+37. `20261014000500_account_opening_compatibility.sql`
+38. `20261014000600_payment_receipt_column_grants.sql`
 
-Both hosted targets report 33 applied and zero pending through `20261014000100_paystack_collections.sql`. They match across 55 tables, 556 columns, 39 policies and three private buckets. Applied migration files are immutable; corrections require a new forward migration.
+Both hosted targets report 38 applied and zero pending through `20261014000600_payment_receipt_column_grants.sql`. They match across 56 tables, 578 columns, 40 policies and three private buckets. Applied migration files are immutable; corrections require a new forward migration.
 
 ## Tests completed
 

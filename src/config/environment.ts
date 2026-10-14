@@ -52,6 +52,7 @@ const schema = z.object({
   PAYSTACK_SECRET_KEY: optionalValue,
   PAYSTACK_CURRENCY: z.enum(["NGN", "USD", "GHS", "ZAR", "KES"]).default("NGN"),
   PAYSTACK_ALLOWED_CHANNELS: z.string().default("card,bank,bank_transfer,ussd"),
+  PAYSTACK_TRANSFERS_ENABLED: z.enum(["true","false"]).default("false").transform((value)=>value==="true"),
 }).superRefine((value, context) => {
   if (Boolean(value.NEXT_PUBLIC_SUPABASE_URL) !== Boolean(value.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
     context.addIssue({ code: "custom", message: "Supabase URL and publishable key must be configured together." });
@@ -92,6 +93,9 @@ const schema = z.object({
   }
   if (value.PAYSTACK_MODE === "live" && value.APP_ENV !== "production") {
     context.addIssue({ code: "custom", path: ["PAYSTACK_MODE"], message: "Live Paystack requires APP_ENV=production." });
+  }
+  if (value.PAYSTACK_TRANSFERS_ENABLED && value.PAYSTACK_MODE === "disabled") {
+    context.addIssue({ code: "custom", path: ["PAYSTACK_TRANSFERS_ENABLED"], message: "Paystack Transfers requires Paystack to be enabled." });
   }
 });
 

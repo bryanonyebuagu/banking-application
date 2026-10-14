@@ -14,7 +14,9 @@ Provider-specific code belongs behind the adapter. Route handlers and UI compone
 
 ## Paystack merchant collections
 
-Paystack hosted checkout is implemented for card, bank, bank-transfer, USSD, QR, mobile-money and Apple Pay channels that Paystack enables for the merchant account and country. The application initializes checkout on the server, verifies `x-paystack-signature` on the raw webhook payload, records each event once, and compares the provider amount and currency with the original collection before marking it successful.
+Paystack hosted checkout is implemented for card, bank, bank-transfer, USSD, QR, mobile-money and Apple Pay channels that Paystack enables for the merchant account and country. The customer selects an active account in the provider currency. The application initializes checkout on the server, verifies `x-paystack-signature` on the raw webhook payload, records each event once, compares the provider amount and currency with the original collection, and posts the balanced deposit only after `charge.success`.
+
+NGN withdrawals use Paystack Transfers. They require AAL2, resolve the destination through Paystack, place an available-balance hold before the transfer request, and never persist the full destination account number. Signed `transfer.success`, `transfer.failed` and `transfer.reversed` events capture, release or reverse the ledger movement. If an API call has an uncertain outcome after transfer initiation, the hold remains in place for webhook reconciliation.
 
 Set these server-side deployment variables only after the Paystack business has been activated:
 
@@ -22,13 +24,14 @@ Set these server-side deployment variables only after the Paystack business has 
 - `PAYSTACK_SECRET_KEY` with the Paystack live secret key
 - `PAYSTACK_CURRENCY` for the activated market
 - `PAYSTACK_ALLOWED_CHANNELS` containing only dashboard-enabled channels
+- `PAYSTACK_TRANSFERS_ENABLED=true` only after Paystack approves and activates Transfers
 - `SUPABASE_SECRET_KEY` for signed webhook persistence
 
 Register `https://bryobankerz.vercel.app/api/payments/paystack/webhook` as the live Paystack webhook URL. Hosted checkout returns to `https://bryobankerz.vercel.app/payments/paystack/callback`.
 
 Provider receipts are intentionally separate from deposit-account balances. Crediting a Chaze Bank customer account requires a sponsor-approved settlement account, customer-level allocation rules, returns handling and reconciliation. A successful merchant charge alone does not authorize a deposit-ledger credit.
 
-Refund and transfer-recipient/payout API adapters are server-only. They must be exposed only through a staff-authorized, audited workflow after the Paystack account has refund/transfer entitlements and the operating team defines approval limits and reconciliation.
+The Paystack business must have Transfers enabled and enough transfer balance. If transfer confirmation by OTP remains enabled in Paystack, the transfer stays pending until it is approved through Paystack. Refund adapters remain server-only until an audited staff approval workflow and refund limits are defined.
 
 | Rail | What Chaze Bank still needs |
 | --- | --- |

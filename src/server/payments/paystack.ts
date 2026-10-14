@@ -10,6 +10,10 @@ export type PaystackChannel = typeof paystackChannels[number];
 const envelope = z.object({ status:z.boolean(), message:z.string(), data:z.unknown().optional() });
 const initializeData = z.object({ authorization_url:z.url(), access_code:z.string(), reference:z.string() });
 const verifyData = z.object({ id:z.number().int(), status:z.string(), reference:z.string(), amount:z.number().int(), currency:z.string(), paid_at:z.string().nullable() });
+const bankData=z.array(z.object({name:z.string(),code:z.string(),active:z.boolean().optional(),currency:z.string().optional()}));
+const resolvedAccountData=z.object({account_number:z.string(),account_name:z.string(),bank_id:z.number().int().optional()});
+const recipientData=z.object({recipient_code:z.string(),active:z.boolean().optional(),currency:z.string()});
+const transferData=z.object({id:z.number().int(),transfer_code:z.string(),reference:z.string(),status:z.string(),amount:z.number().int(),currency:z.string()});
 
 function secret() {
   if (environment.PAYSTACK_MODE === "disabled" || !environment.PAYSTACK_SECRET_KEY) throw new Error("PAYSTACK_NOT_CONFIGURED");
@@ -45,11 +49,23 @@ export async function createPaystackRefund(transactionId:number,amountMinor?:num
 }
 
 export async function createPaystackTransferRecipient(input:{name:string;accountNumber:string;bankCode:string;currency:string}){
-  return request("/transferrecipient",{method:"POST",body:JSON.stringify({type:"nuban",name:input.name,account_number:input.accountNumber,bank_code:input.bankCode,currency:input.currency})});
+  const data=await request("/transferrecipient",{method:"POST",body:JSON.stringify({type:"nuban",name:input.name,account_number:input.accountNumber,bank_code:input.bankCode,currency:input.currency})});
+  return recipientData.parse(data);
 }
 
 export async function initiatePaystackTransfer(input:{amountMinor:number;recipientCode:string;reference:string;reason:string}){
-  return request("/transfer",{method:"POST",body:JSON.stringify({source:"balance",amount:input.amountMinor,recipient:input.recipientCode,reference:input.reference,reason:input.reason})});
+  const data=await request("/transfer",{method:"POST",body:JSON.stringify({source:"balance",amount:input.amountMinor,recipient:input.recipientCode,reference:input.reference,reason:input.reason})});
+  return transferData.parse(data);
+}
+
+export async function listPaystackBanks(currency:string){
+  const data=await request(`/bank?currency=${encodeURIComponent(currency)}&pay_with_bank_transfer=true`,{method:"GET"});
+  return bankData.parse(data).filter((bank)=>bank.active!==false);
+}
+
+export async function resolvePaystackAccount(accountNumber:string,bankCode:string){
+  const data=await request(`/bank/resolve?account_number=${encodeURIComponent(accountNumber)}&bank_code=${encodeURIComponent(bankCode)}`,{method:"GET"});
+  return resolvedAccountData.parse(data);
 }
 
 export function verifyPaystackWebhook(rawBody:string,signature:string|null){

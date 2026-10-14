@@ -7,7 +7,7 @@ import { getVerifiedIdentity } from "@/server/auth/identity";
 import { createPaystackReference, enabledPaystackChannels, initializePaystackTransaction, paystackChannels } from "@/server/payments/paystack";
 import { requireSameOrigin } from "@/server/security/request";
 
-const inputSchema=z.object({amountMinor:z.number().int().min(100).max(100_000_000),channel:z.enum(paystackChannels)});
+const inputSchema=z.object({accountId:z.uuid(),amountMinor:z.number().int().min(100).max(100_000_000),channel:z.enum(paystackChannels)});
 
 export async function POST(request:Request){
   try{
@@ -19,7 +19,7 @@ export async function POST(request:Request){
     if(!enabledPaystackChannels().includes(input.channel)) return NextResponse.json({error:"That payment method is not enabled."},{status:400});
     const reference=createPaystackReference();
     const supabase=await createServerSupabaseClient();
-    const created=await supabase.rpc("create_current_payment_collection",{p_reference:reference,p_amount_minor:input.amountMinor,p_currency:environment.PAYSTACK_CURRENCY,p_channel:input.channel});
+    const created=await supabase.rpc("create_current_payment_collection",{p_account_id:input.accountId,p_reference:reference,p_amount_minor:input.amountMinor,p_currency:environment.PAYSTACK_CURRENCY,p_channel:input.channel});
     if(created.error) throw new Error("PAYMENT_COLLECTION_CREATE_FAILED");
     try{
       const initialized=await initializePaystackTransaction({email:identity.email,amountMinor:input.amountMinor,reference,channel:input.channel});

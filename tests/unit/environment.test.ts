@@ -34,4 +34,9 @@ describe("environment boundary", () => {
     expect(parseEnvironment(production).PAYSTACK_MODE).toBe("live");
     expect(() => parseEnvironment({ ...production, APP_ENV:"demo" })).toThrow("Live Paystack requires APP_ENV=production");
   });
+  it("keeps Paystack payouts behind an explicit provider-entitlement switch", () => {
+    expect(parseEnvironment({}).PAYSTACK_TRANSFERS_ENABLED).toBe(false);
+    expect(() => parseEnvironment({ PAYSTACK_TRANSFERS_ENABLED:"true" })).toThrow("Paystack Transfers requires Paystack to be enabled");
+    expect(parseEnvironment({ PAYSTACK_MODE:"test", PAYSTACK_SECRET_KEY:"sk_test_example", PAYSTACK_TRANSFERS_ENABLED:"true" }).PAYSTACK_TRANSFERS_ENABLED).toBe(true);
+  });
 });

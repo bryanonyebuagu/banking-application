@@ -12,10 +12,10 @@ function entry(data:FormData,key:string){const value=data.get(key);return typeof
 async function authorize(){await requireSameOrigin();await requireVerifiedIdentity();return createServerSupabaseClient()}
 
 export async function openAccountAction(_state:AccountActionState,formData:FormData):Promise<AccountActionState>{
-  const parsed=z.object({accountType:z.enum(["checking","savings"]),nickname}).safeParse({accountType:entry(formData,"accountType"),nickname:entry(formData,"nickname")});
+  const parsed=z.object({accountType:z.enum(["checking","savings"]),currency:z.enum(["USD","NGN"]),nickname}).safeParse({accountType:entry(formData,"accountType"),currency:entry(formData,"currency"),nickname:entry(formData,"nickname")});
   if(!parsed.success)return{status:"error",message:"Check the highlighted information.",fieldErrors:parsed.error.flatten().fieldErrors};
   const supabase=await authorize();
-  const result=await supabase.rpc("open_current_account",{p_account_type:parsed.data.accountType,p_nickname:parsed.data.nickname});
+  const result=await supabase.rpc("open_current_account",{p_account_type:parsed.data.accountType,p_currency:parsed.data.currency,p_nickname:parsed.data.nickname});
   if(result.error||!result.data)return{status:"error",message:"We couldn’t open this account. Confirm registration and verification are complete, then try again."};
   revalidatePath("/dashboard");redirect(`/accounts/${result.data}?message=opened`);
 }
