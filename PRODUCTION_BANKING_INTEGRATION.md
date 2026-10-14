@@ -12,12 +12,31 @@ All external money movement follows one path:
 
 Provider-specific code belongs behind the adapter. Route handlers and UI components must never call a provider directly, and provider credentials must remain server-only.
 
+## Paystack merchant collections
+
+Paystack hosted checkout is implemented for card, bank, bank-transfer, USSD, QR, mobile-money and Apple Pay channels that Paystack enables for the merchant account and country. The application initializes checkout on the server, verifies `x-paystack-signature` on the raw webhook payload, records each event once, and compares the provider amount and currency with the original collection before marking it successful.
+
+Set these server-side deployment variables only after the Paystack business has been activated:
+
+- `PAYSTACK_MODE=live`
+- `PAYSTACK_SECRET_KEY` with the Paystack live secret key
+- `PAYSTACK_CURRENCY` for the activated market
+- `PAYSTACK_ALLOWED_CHANNELS` containing only dashboard-enabled channels
+- `SUPABASE_SECRET_KEY` for signed webhook persistence
+
+Register `https://bryobankerz.vercel.app/api/payments/paystack/webhook` as the live Paystack webhook URL. Hosted checkout returns to `https://bryobankerz.vercel.app/payments/paystack/callback`.
+
+Provider receipts are intentionally separate from deposit-account balances. Crediting a Chaze Bank customer account requires a sponsor-approved settlement account, customer-level allocation rules, returns handling and reconciliation. A successful merchant charge alone does not authorize a deposit-ledger credit.
+
+Refund and transfer-recipient/payout API adapters are server-only. They must be exposed only through a staff-authorized, audited workflow after the Paystack account has refund/transfer entitlements and the operating team defines approval limits and reconciliation.
+
 | Rail | What Chaze Bank still needs |
 | --- | --- |
 | ACH and direct deposit | Approved account product, production API access, assigned receiving instructions, reports and webhooks |
 | Domestic wire | Wire entitlement, beneficiary instructions, production authentication and status reporting |
 | International wire | Cross-border approval, supported currencies, FX/compliance rules and production credentials |
 | RTP | An eligible provider account and explicit real-time-payment entitlement |
+| Debit-card issuing | A regulated issuing processor/sponsor, card-program approval, tokenized PAN handling and processor webhooks |
 | Zelle® | Acceptance as a participating financial institution and the implementation package supplied through that partnership |
 
 ## Before a rail can be enabled

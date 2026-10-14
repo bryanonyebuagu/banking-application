@@ -552,6 +552,25 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"payment_collections": {
+                  Row: {
+                    "amount_minor": number,"authorization_url": string | null,"channel": string,"created_at": string,"currency": string,"customer_id": string,"failure_code": string | null,"id": string,"paid_at": string | null,"provider": string,"provider_reference": string,"provider_transaction_id": number | null,"status": string,"updated_at": string
+                  }
+                  Insert: {
+                    "amount_minor": number,"authorization_url"?: string | null,"channel": string,"created_at"?: string,"currency": string,"customer_id": string,"failure_code"?: string | null,"id"?: string,"paid_at"?: string | null,"provider"?: string,"provider_reference": string,"provider_transaction_id"?: number | null,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "amount_minor"?: number,"authorization_url"?: string | null,"channel"?: string,"created_at"?: string,"currency"?: string,"customer_id"?: string,"failure_code"?: string | null,"id"?: string,"paid_at"?: string | null,"provider"?: string,"provider_reference"?: string,"provider_transaction_id"?: number | null,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "payment_collections_customer_id_fkey"
+      columns: ["customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"payments": {
                   Row: {
                     "account_id": string,"amount_minor": number,"created_at": string,"currency": string,"customer_id": string,"id": string,"journal_id": string | null,"payee_id": string,"schedule_id": string | null,"scheduled_at": string | null,"status": string,"updated_at": string
@@ -854,8 +873,14 @@ isOneToOne: false
 "complete_current_synthetic_verification":
 { Args: { "p_record_id": string,"p_test_answer": string }; Returns: string
                            },
+"configure_paystack_collection":
+{ Args: { "p_authorization_url": string,"p_collection_id": string }; Returns: undefined
+                           },
 "create_current_payee":
 { Args: { "p_name": string,"p_synthetic_reference": string }; Returns: string
+                           },
+"create_current_payment_collection":
+{ Args: { "p_amount_minor": number,"p_channel": string,"p_currency": string,"p_reference": string }; Returns: string
                            },
 "create_current_support_ticket":
 { Args: { "p_body": string,"p_subject": string }; Returns: string
@@ -871,6 +896,9 @@ isOneToOne: false
                            },
 "execute_current_transfer":
 { Args: { "p_amount_minor"?: number,"p_destination_account_id"?: string,"p_idempotency_key"?: string,"p_memo"?: string,"p_recipient_id"?: string,"p_source_account_id": string }; Returns: string
+                           },
+"fail_paystack_collection":
+{ Args: { "p_collection_id": string,"p_failure_code": string }; Returns: undefined
                            },
 "finalize_current_check_upload":
 { Args: { "p_deposit_id": string }; Returns: undefined
@@ -964,6 +992,9 @@ isOneToOne: false
 { Args: { "p_limit"?: number }; Returns: {
               "result_status": string,"transfer_id": string
             }[]
+                           },
+"process_paystack_event":
+{ Args: { "p_amount_minor": number,"p_currency": string,"p_event_key": string,"p_event_type": string,"p_paid_at": string,"p_payload_hash": string,"p_provider_transaction_id": number,"p_reference": string }; Returns: string
                            },
 "record_current_login_event":
 { Args: { "p_event_type": string }; Returns: string

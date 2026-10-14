@@ -48,6 +48,10 @@ const schema = z.object({
   BANKING_PROVIDER_CLIENT_SECRET: optionalValue,
   BANKING_PROVIDER_ACCOUNT_ID: optionalValue,
   BANKING_PROVIDER_ENABLED_RAILS: optionalValue,
+  PAYSTACK_MODE: z.enum(["disabled", "test", "live"]).default("disabled"),
+  PAYSTACK_SECRET_KEY: optionalValue,
+  PAYSTACK_CURRENCY: z.enum(["NGN", "USD", "GHS", "ZAR", "KES"]).default("NGN"),
+  PAYSTACK_ALLOWED_CHANNELS: z.string().default("card,bank,bank_transfer,ussd"),
 }).superRefine((value, context) => {
   if (Boolean(value.NEXT_PUBLIC_SUPABASE_URL) !== Boolean(value.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)) {
     context.addIssue({ code: "custom", message: "Supabase URL and publishable key must be configured together." });
@@ -76,6 +80,18 @@ const schema = z.object({
   }
   if (value.BANKING_PROVIDER_MODE === "production" && value.APP_ENV !== "production") {
     context.addIssue({ code: "custom", path: ["BANKING_PROVIDER_MODE"], message: "Production payment rails require APP_ENV=production." });
+  }
+  if (value.PAYSTACK_MODE !== "disabled") {
+    if (!value.PAYSTACK_SECRET_KEY) context.addIssue({ code: "custom", path: ["PAYSTACK_SECRET_KEY"], message: `Required when Paystack ${value.PAYSTACK_MODE} mode is enabled.` });
+    const expectedPrefix = value.PAYSTACK_MODE === "live" ? "sk_live_" : "sk_test_";
+    if (value.PAYSTACK_SECRET_KEY && !value.PAYSTACK_SECRET_KEY.startsWith(expectedPrefix)) context.addIssue({ code: "custom", path: ["PAYSTACK_SECRET_KEY"], message: `Expected a ${expectedPrefix} key.` });
+    const allowed = new Set(["card","bank","bank_transfer","ussd","qr","mobile_money","apple_pay"]);
+    for (const channel of value.PAYSTACK_ALLOWED_CHANNELS.split(",").map((item) => item.trim()).filter(Boolean)) {
+      if (!allowed.has(channel)) context.addIssue({ code: "custom", path: ["PAYSTACK_ALLOWED_CHANNELS"], message: `Unsupported Paystack channel: ${channel}.` });
+    }
+  }
+  if (value.PAYSTACK_MODE === "live" && value.APP_ENV !== "production") {
+    context.addIssue({ code: "custom", path: ["PAYSTACK_MODE"], message: "Live Paystack requires APP_ENV=production." });
   }
 });
 

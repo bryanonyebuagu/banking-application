@@ -23,4 +23,15 @@ describe("environment boundary", () => {
     expect(parseEnvironment({ SUPABASE_SECRET_KEY: "must-not-leak" })).not.toHaveProperty("SUPABASE_SECRET_KEY");
     expect(() => parseEnvironment({ APP_ORIGIN: "not-a-url" })).toThrow("APP_ORIGIN");
   });
+  it("keeps Paystack disabled unless an appropriate secret key is configured", () => {
+    expect(parseEnvironment({}).PAYSTACK_MODE).toBe("disabled");
+    expect(() => parseEnvironment({ PAYSTACK_MODE: "test" })).toThrow("PAYSTACK_SECRET_KEY");
+    expect(() => parseEnvironment({ PAYSTACK_MODE: "test", PAYSTACK_SECRET_KEY: "sk_live_wrong" })).toThrow("sk_test_");
+    expect(parseEnvironment({ PAYSTACK_MODE: "test", PAYSTACK_SECRET_KEY: "sk_test_example" }).PAYSTACK_MODE).toBe("test");
+  });
+  it("permits live Paystack only in a fully configured production environment", () => {
+    const production = { APP_ENV:"production", APP_ORIGIN:"https://bryobankerz.vercel.app", AUTH_EMAIL_DELIVERY:"custom-smtp", NEXT_PUBLIC_SUPABASE_URL:"https://example.supabase.co", NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:"publishable", PAYSTACK_MODE:"live", PAYSTACK_SECRET_KEY:"sk_live_example" };
+    expect(parseEnvironment(production).PAYSTACK_MODE).toBe("live");
+    expect(() => parseEnvironment({ ...production, APP_ENV:"demo" })).toThrow("Live Paystack requires APP_ENV=production");
+  });
 });

@@ -18,6 +18,8 @@ Updated: 2026-10-14.
 
 All planned product and administration build work through Milestone E is implemented. Milestone F verification is in progress. Authentication repair and the real delivered-email journey take priority over other development.
 
+On October 14, the provider-neutral payment boundary gained a Paystack merchant-collection implementation: hosted checkout initialization, exact minor-unit amounts, signed/idempotent webhook processing, provider verification callbacks and a customer payment form. The migration has passed a clean application on the separate hosted test project. Live checkout remains fail-closed until Paystack live credentials and merchant/channel activation are configured; customer deposit balances are not credited from merchant receipts.
+
 Current blockers: the authentication browser/email journey remains unverified and requires the browser connection described above. Production banking rails separately require selection and onboarding of an approved provider.
 
 ## Milestone tracking
@@ -116,8 +118,9 @@ Applied to hosted development, in order:
 30. `20261004000800_security_center.sql`
 31. `20261004000900_support.sql`
 32. `20261004001000_staff_administration.sql`
+33. `20261014000100_paystack_collections.sql`
 
-Both hosted targets report 32 applied and zero pending through `20261004001000_staff_administration.sql`. Applied migration files are immutable; corrections require a new forward migration.
+Both hosted targets report 33 applied and zero pending through `20261014000100_paystack_collections.sql`. They match across 55 tables, 556 columns, 39 policies and three private buckets. Applied migration files are immutable; corrections require a new forward migration.
 
 ## Tests completed
 

@@ -1,7 +1,7 @@
 import "server-only";
 import { environment } from "@/config/server";
 
-export type PaymentRail = "ach" | "domestic_wire" | "international_wire" | "rtp" | "zelle";
+export type PaymentRail = "ach" | "domestic_wire" | "international_wire" | "rtp" | "fednow" | "debit_cards" | "zelle";
 export type RailStatus = "production_credentials_configured" | "provider_configuration_required" | "institutional_approval_required";
 
 export type PaymentRailCapability = {
@@ -16,6 +16,8 @@ const details: Record<PaymentRail, Omit<PaymentRailCapability, "rail" | "status"
   domestic_wire: { name: "Domestic wire integration", description: "A future approved provider could issue beneficiary instructions after institutional onboarding." },
   international_wire: { name: "International wire integration", description: "A future approved provider could issue supported-currency instructions after institutional onboarding." },
   rtp: { name: "Real-time payment integration", description: "A future approved provider could enable an eligible instant-payment rail." },
+  fednow: { name: "FedNow integration", description: "A U.S. sponsor bank with FedNow participation must approve and expose this rail." },
+  debit_cards: { name: "Debit card issuing", description: "A sponsor and issuing processor must approve the card program and issue tokenized card records." },
   zelle: { name: "Person-to-person payment integration", description: "A supported network would require institutional approval, provider enablement and customer enrollment." },
 };
 
