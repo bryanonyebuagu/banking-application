@@ -1,6 +1,6 @@
 # Project status
 
-Updated: 2026-10-12.
+Updated: 2026-10-14.
 
 ## Authentication repair in progress
 
@@ -12,6 +12,7 @@ Updated: 2026-10-12.
 - October 10 checks: TypeScript passed; live test-project session/RLS checks passed and removed their fixtures. October 12: TypeScript, lint, 20 focused callback/environment tests and `npm run build` passed. Commit `b91b2e0` was pushed to main and Vercel reported deployment completed; production callback headers confirm the updated code is live.
 - Live signup rejected a short password, accepted a valid password, displayed the pending-verification state, saved name metadata, and delivered the email. The test user's confirmation timestamp preceded the agent's attempt to click the link; the cause is not established (a user or scanner may have followed it). Do not claim a scanner root cause without request evidence.
 - Completion is NOT claimed. The full delivered-email/browser journey and mobile/Safari testing remain outstanding. Browser access returned long enough for template setup and signup testing, then disconnected again. The approved `+authcheck` test account remains for completing recovery and dashboard verification; no financial data was added.
+- October 14 final UI gate: TypeScript, lint with zero warnings, 33 unit tests, the production build and all 13 responsive/accessibility browser tests pass. The browser suite covers 320, 375, 390, 430, 768, 1024, 1280, 1440 and 1920px. Carousel-aware heading checks and current account-availability copy replaced stale pre-carousel assertions. Three low-opacity text styles were raised to WCAG AA contrast.
 
 ## Current milestone
 

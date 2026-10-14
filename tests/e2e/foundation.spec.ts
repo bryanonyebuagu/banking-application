@@ -23,7 +23,7 @@ for (const width of widths) {
     for (const route of ["/", "/checking", "/foundation"]) {
       const response = await page.goto(route);
       expect(response?.status()).toBe(200);
-      await expect(page.locator("h1")).toBeVisible();
+      await expect(page.locator('article[aria-hidden="false"] h1, main > h1').first()).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
       const a11y = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"]).analyze();
       expect(a11y.violations).toEqual([]);
@@ -94,7 +94,7 @@ test("complete public navigation is reachable and honest about availability", as
   await expect(page.getByRole("navigation", { name: "Product navigation" })).toBeVisible();
   await page.getByRole("link", { name: "Checking", exact: true }).first().click();
   await expect(page).toHaveURL(/\/checking$/);
-  await expect(page.getByText("Checking accounts become available in Phase 7.")).toBeVisible();
+  await expect(page.getByText("Checking accounts are available to verified customers in online banking.")).toBeVisible();
   await page.setViewportSize({ width: 320, height: 800 });
   await page.getByRole("button", { name: "Menu", exact: true }).click();
   const drawer = page.getByRole("dialog", { name: "Navigation" });
