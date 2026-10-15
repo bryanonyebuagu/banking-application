@@ -30,7 +30,7 @@ export function HeroCarousel({ slides, label }: { slides: HeroSlide[]; label: st
 
   useEffect(() => {
     if (slides.length < 2 || paused || reducedMotion) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 6_000);
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 4_000);
     return () => window.clearInterval(timer);
   }, [paused, reducedMotion, slides.length]);
 

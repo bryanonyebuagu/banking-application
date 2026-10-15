@@ -103,6 +103,7 @@ test("hero images advance automatically without visible slide controls", async (
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
   const carousel = page.getByRole("region", { name: "Featured Chaze Bank services" });
+  await expect(carousel.locator("article")).toHaveCount(3);
   await expect(carousel.getByRole("button", { name: /slide/i })).toHaveCount(0);
   await expect(carousel.getByRole("button", { name: /previous|next/i })).toHaveCount(0);
   const firstTitle = await carousel.locator('article[aria-hidden="false"] h1').textContent();
