@@ -4,4 +4,4 @@ import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteNotice } from "@/components/layout/site-notice";
-export function AppChrome({children,viewer}:{children:ReactNode;viewer:{firstName:string|null}|null}){const pathname=usePathname();if(pathname==='/staff'||pathname.startsWith('/staff/'))return children;return <><SiteHeader viewer={viewer}/><SiteNotice/>{children}<SiteFooter/></>}
+export function AppChrome({children,viewer}:{children:ReactNode;viewer:{firstName:string|null}|null}){const pathname=usePathname();if(pathname==='/staff'||pathname.startsWith('/staff/'))return children;return <><SiteHeader viewer={viewer}/><SiteNotice/>{children}{!viewer&&<SiteFooter/>}</>}

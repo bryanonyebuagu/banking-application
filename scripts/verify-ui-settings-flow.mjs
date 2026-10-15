@@ -102,6 +102,11 @@ try {
   await expect(page.getByText("+$25.00", { exact: true })).toHaveClass(/text-success/);
   for (const name of ["Visit Support","Frequently Asked Questions","Contact Us"]) await expect(page.getByRole("link", { name })).toBeVisible();
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator("footer")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Menu", exact: true }).click();
+  await expect(page.getByRole("navigation", { name: "Site menu" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   console.log("Dashboard, four-step registration, settings, theme persistence, notification storage and ledger balance checks passed.");
 } catch (error) {
