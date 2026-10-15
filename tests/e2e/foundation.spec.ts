@@ -94,10 +94,11 @@ test("complete public navigation is reachable and honest about availability", as
   await expect(page).toHaveURL(/\/checking$/);
   await expect(page.getByText("Checking accounts are available to verified customers in online banking.")).toBeVisible();
   await page.setViewportSize({ width: 320, height: 800 });
-  await expect(page.getByRole("button", { name: /Switch to (dark|light) mode/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Switch to (dark|light) mode/ })).toBeHidden();
   await page.getByRole("button", { name: "Menu", exact: true }).click();
   const siteMenu = page.getByRole("navigation", { name: "Site menu" });
   await expect(siteMenu).toBeVisible();
+  await expect(page.getByRole("button", { name: /Switch to (dark|light) mode/ })).toBeVisible();
   for (const group of ["Personal","Resources","Information"]) await expect(siteMenu.getByRole("heading", { name: group })).toBeVisible();
   await expect(page.locator("footer")).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

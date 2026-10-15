@@ -42,7 +42,10 @@ try {
   await page.locator('input[name="password"]').fill(user.password);
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).toHaveURL(`${origin}/dashboard`);
-  await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(1);
+  await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Menu", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Sign out" })).toHaveClass(/bg-danger/);
+  await page.getByRole("button", { name: "Close menu" }).click();
 
   stage = "four-step-registration";
   await page.getByRole("link", { name: "Start registration" }).click();
@@ -104,9 +107,15 @@ try {
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator("footer")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Sign out" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Settings" })).toBeHidden();
+  await expect(page.getByRole("link", { name: "Notifications" })).toBeHidden();
+  await expect(page.getByRole("button", { name: /Switch to (dark|light) mode/ })).toBeHidden();
   await page.getByRole("button", { name: "Menu", exact: true }).click();
   await expect(page.getByRole("navigation", { name: "Site menu" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Settings" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Notifications" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Switch to (dark|light) mode/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sign out" })).toHaveClass(/bg-danger/);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
   console.log("Dashboard, four-step registration, settings, theme persistence, notification storage and ledger balance checks passed.");
 } catch (error) {
