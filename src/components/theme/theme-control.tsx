@@ -28,7 +28,7 @@ function ThemeIcon({ theme }: { theme: ThemeName }) {
 export function ThemeToggle() {
   const [theme, setTheme] = useTheme();
   const next = theme === "light" ? "dark" : "light";
-  return <button type="button" onClick={() => setTheme(next)} aria-label={`Switch to ${next} mode`} title={`Switch to ${next} mode`} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-3 font-semibold text-action shadow-card hover:bg-subtle"><ThemeIcon theme={theme}/><span className="hidden sm:inline">{theme === "light" ? "Light" : "Dark"}</span></button>;
+  return <button type="button" onClick={() => setTheme(next)} aria-label={`Switch to ${next} mode`} title={`Switch to ${next} mode`} className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-action shadow-card hover:bg-subtle"><ThemeIcon theme={theme}/></button>;
 }
 
 export function ThemeSelector() {

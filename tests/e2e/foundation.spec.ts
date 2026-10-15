@@ -99,6 +99,16 @@ test("complete public navigation is reachable and honest about availability", as
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
+test("hero images advance automatically without visible slide controls", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  const carousel = page.getByRole("region", { name: "Featured Chaze Bank services" });
+  await expect(carousel.getByRole("button", { name: /slide/i })).toHaveCount(0);
+  await expect(carousel.getByRole("button", { name: /previous|next/i })).toHaveCount(0);
+  const firstTitle = await carousel.locator('article[aria-hidden="false"] h1').textContent();
+  await expect.poll(async () => carousel.locator('article[aria-hidden="false"] h1').textContent(), { timeout: 8_000 }).not.toBe(firstTitle);
+});
+
 test("routes, anchors, error page and baseline headers", async ({ page, request }) => {
   await page.goto("/");
   const links = await page.locator("a[href]").evaluateAll((elements) => elements.map((element) => element.getAttribute("href")!));

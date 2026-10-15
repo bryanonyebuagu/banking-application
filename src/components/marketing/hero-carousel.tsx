@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export type HeroAction = { label: string; href: string; variant?: "primary" | "secondary" };
 export type HeroSlide = {
@@ -19,7 +19,6 @@ export function HeroCarousel({ slides, label }: { slides: HeroSlide[]; label: st
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const pointerStart = useRef<number | null>(null);
 
   useEffect(() => {
     const query = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -29,33 +28,20 @@ export function HeroCarousel({ slides, label }: { slides: HeroSlide[]; label: st
     return () => query.removeEventListener("change", update);
   }, []);
 
-  const select = useCallback((index: number, fromUser = true) => {
-    setActive((index + slides.length) % slides.length);
-    if (fromUser) setPaused(true);
-  }, [slides.length]);
-
   useEffect(() => {
     if (slides.length < 2 || paused || reducedMotion) return;
     const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 6_000);
     return () => window.clearInterval(timer);
   }, [paused, reducedMotion, slides.length]);
 
-  function finishSwipe(clientX: number) {
-    if (pointerStart.current === null) return;
-    const distance = clientX - pointerStart.current;
-    pointerStart.current = null;
-    if (Math.abs(distance) < 48) return;
-    select(active + (distance < 0 ? 1 : -1));
-  }
-
   return <section
     aria-label={label}
     aria-roledescription="carousel"
-    className="relative isolate min-h-[620px] touch-pan-y overflow-hidden bg-brand text-white sm:min-h-[580px] lg:min-h-[560px]"
+    className="relative isolate min-h-[620px] overflow-hidden bg-brand text-white sm:min-h-[580px] lg:min-h-[560px]"
     onFocusCapture={() => setPaused(true)}
-    onPointerDown={(event) => { pointerStart.current = event.clientX; }}
-    onPointerUp={(event) => finishSwipe(event.clientX)}
-    onPointerCancel={() => { pointerStart.current = null; }}
+    onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+    onMouseEnter={() => setPaused(true)}
+    onMouseLeave={() => setPaused(false)}
   >
     <p className="sr-only" aria-live="polite">Slide {active + 1} of {slides.length}: {slides[active]?.title}</p>
     {slides.map((slide, index) => {
@@ -95,19 +81,5 @@ export function HeroCarousel({ slides, label }: { slides: HeroSlide[]; label: st
         </div>
       </article>;
     })}
-    {slides.length > 1 && <div className="absolute inset-x-0 bottom-5 z-20 mx-auto flex max-w-public items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-      <div className="flex items-center gap-2">{slides.map((slide, index) => <button
-        key={slide.title}
-        type="button"
-        aria-label={`Show slide ${index + 1}: ${slide.title}`}
-        aria-current={index === active ? "true" : undefined}
-        onClick={() => select(index)}
-        className={`h-2.5 rounded-full border border-white transition-[width,background-color] ${index === active ? "w-8 bg-white" : "w-2.5 bg-white/35 hover:bg-white/70"}`}
-      />)}</div>
-      <div className="flex gap-2">
-        <button type="button" aria-label="Previous slide" onClick={() => select(active - 1)} className="flex h-11 w-11 items-center justify-center rounded-full border border-white bg-brand/70 text-2xl text-white hover:bg-brand">‹</button>
-        <button type="button" aria-label="Next slide" onClick={() => select(active + 1)} className="flex h-11 w-11 items-center justify-center rounded-full border border-white bg-brand/70 text-2xl text-white hover:bg-brand">›</button>
-      </div>
-    </div>}
   </section>;
 }
