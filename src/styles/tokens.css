@@ -21,3 +21,38 @@
   --container-public: 75rem;
   --container-banking: 80rem;
 }
+
+:root {
+  color-scheme: light;
+  --dashboard-panel: #dcecf9;
+  --dashboard-tile-from: #ffffff;
+  --dashboard-tile-to: #edf6fc;
+  --dashboard-tile-border: #bdd4e8;
+  --dashboard-tile-step: #b9d2e6;
+  --dashboard-support: #073b6f;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-brand: #1678cf;
+  --color-action: #62b0ff;
+  --color-action-hover: #8ac5ff;
+  --color-canvas: #08131f;
+  --color-surface: #102131;
+  --color-subtle: #172b3d;
+  --color-ink: #f4f8fc;
+  --color-muted: #b6c4d2;
+  --color-border: #3b5268;
+  --color-success: #4ade80;
+  --color-danger: #fb7185;
+  --color-warning: #fbbf24;
+  --color-focus: #8ac5ff;
+  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.5);
+  --shadow-overlay: 0 8px 24px rgb(0 0 0 / 0.58);
+  --dashboard-panel: #122b42;
+  --dashboard-tile-from: #183149;
+  --dashboard-tile-to: #102536;
+  --dashboard-tile-border: #365b79;
+  --dashboard-tile-step: #07111b;
+  --dashboard-support: #0c2d4b;
+}

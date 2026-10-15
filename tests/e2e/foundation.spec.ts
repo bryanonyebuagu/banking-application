@@ -29,12 +29,10 @@ for (const width of widths) {
       expect(a11y.violations).toEqual([]);
       await page.screenshot({ path: testInfo.outputPath(`${route === "/" ? "home" : route === "/foundation" ? "components" : "checking"}-${width}.png`), fullPage: true });
     }
-    if (width < 640) {
-      await page.getByRole("button", { name: "Menu", exact: true }).click();
-      await expect(page.getByRole("dialog", { name: "Navigation" })).toBeVisible();
-      await page.keyboard.press("Escape");
-      await expect(page.getByRole("button", { name: "Menu", exact: true })).toBeFocused();
-    }
+    await page.getByRole("button", { name: "Switch to dark mode" }).click();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
     await page.getByRole("button", { name: "Open dialog", exact: true }).click();
     await expect(page.getByRole("dialog", { name: "Example dialog" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -90,16 +88,15 @@ test("complete public navigation is reachable and honest about availability", as
   }
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/");
-  await expect(page.getByRole("navigation", { name: "Audience navigation" })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Product navigation" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Audience navigation" })).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "Product navigation" })).toHaveCount(0);
   await page.getByRole("link", { name: "Checking", exact: true }).first().click();
   await expect(page).toHaveURL(/\/checking$/);
   await expect(page.getByText("Checking accounts are available to verified customers in online banking.")).toBeVisible();
   await page.setViewportSize({ width: 320, height: 800 });
-  await page.getByRole("button", { name: "Menu", exact: true }).click();
-  const drawer = page.getByRole("dialog", { name: "Navigation" });
-  await expect(drawer.getByRole("link", { name: "Wealth Management" })).toBeVisible();
-  await expect(drawer.getByRole("link", { name: "Help" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Switch to (dark|light) mode/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Menu", exact: true })).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test("routes, anchors, error page and baseline headers", async ({ page, request }) => {

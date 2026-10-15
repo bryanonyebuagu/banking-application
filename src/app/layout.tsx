@@ -16,5 +16,5 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const identity = await getVerifiedIdentity();
   const viewer = identity ? { firstName: identity.firstName } : null;
-  return <html lang="en" className={openSans.variable}><body className="flex min-h-dvh flex-col"><a className="sr-only z-50 bg-surface p-4 focus:not-sr-only focus:fixed focus:left-4 focus:top-4" href="#main-content">Skip to main content</a><AppChrome viewer={viewer}>{children}</AppChrome></body></html>;
+  return <html lang="en" className={openSans.variable} suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{var t=localStorage.getItem('chaze-theme');document.documentElement.dataset.theme=t==='dark'?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}`}}/></head><body className="flex min-h-dvh flex-col"><a className="sr-only z-50 bg-surface p-4 focus:not-sr-only focus:fixed focus:left-4 focus:top-4" href="#main-content">Skip to main content</a><AppChrome viewer={viewer}>{children}</AppChrome></body></html>;
 }

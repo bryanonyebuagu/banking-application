@@ -5,7 +5,6 @@ import { z } from "zod";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requireVerifiedIdentity } from "@/server/auth/identity";
 import { requireSameOrigin } from "@/server/security/request";
-import { identityVerificationProvider } from "@/server/verification/provider";
 
 export type RegistrationActionState = {
   status: "idle" | "error";
@@ -93,17 +92,5 @@ export async function completeRegistrationAction() {
   const supabase = await authorize();
   const result = await supabase.rpc("complete_current_registration");
   if (result.error) redirect("/register?step=review&message=save-failed");
-  redirect("/register?step=verification");
-}
-
-export async function verifyIdentityAction(formData: FormData) {
-  const parsed = z.enum(["verified","failed","manual_review"]).safeParse(value(formData,"scenario"));
-  if (!parsed.success) redirect("/register?step=verification&message=scenario-required");
-  const supabase = await authorize();
-  const request = await identityVerificationProvider.createSyntheticRequest(parsed.data);
-  const pending = await supabase.rpc("begin_current_synthetic_verification", { p_fixture_id:request.fixtureId });
-  if (pending.error || !pending.data) redirect("/register?step=verification&message=verification-failed");
-  const completed = await supabase.rpc("complete_current_synthetic_verification", { p_record_id:pending.data,p_test_answer:request.testAnswer });
-  if (completed.error) redirect("/register?step=verification&message=verification-failed");
-  redirect(`/register?step=verification&result=${completed.data}`);
+  redirect("/dashboard");
 }

@@ -7,6 +7,7 @@
   h1, h2, h3 { letter-spacing: -0.015em; }
   :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 4px; }
   button, input, select, textarea { font: inherit; }
+  input::placeholder, textarea::placeholder { color: var(--color-muted); opacity: 0.85; }
   button:not(:disabled), a { -webkit-tap-highlight-color: transparent; }
   button:not(:disabled) { cursor: pointer; }
   h1, h2, h3, p { overflow-wrap: anywhere; }

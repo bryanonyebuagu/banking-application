@@ -17,6 +17,7 @@
     "test:e2e": "node scripts/run-e2e.mjs",
     "test:integration": "node scripts/run-e2e.mjs --project=chromium",
     "test:e2e:auth": "node scripts/run-auth-e2e.mjs",
+    "test:e2e:ui": "node scripts/verify-ui-settings-flow.mjs",
     "test:db": "node scripts/supabase-podman.mjs test db",
     "db:start": "node scripts/supabase-podman.mjs start",
     "db:status": "node scripts/supabase-podman.mjs status",

@@ -4,11 +4,11 @@ import { Alert } from "@/components/ui/surfaces";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { requireVerifiedIdentity } from "@/server/auth/identity";
-import { completeRegistrationAction, verifyIdentityAction } from "@/server/registration/actions";
+import { completeRegistrationAction } from "@/server/registration/actions";
 import { AddressForm, EmploymentForm, PersonalForm, type RegistrationDraft } from "@/features/registration/registration-forms";
 import { RegistrationShell } from "@/features/registration/registration-shell";
 
-const steps = ["personal","address","employment","review","verification"] as const;
+const steps = ["personal","address","employment","review"] as const;
 type Step = typeof steps[number];
 const incomeLabels: Record<string,string> = { under_25000:"Under $25,000", "25000_49999":"$25,000–$49,999", "50000_74999":"$50,000–$74,999", "75000_99999":"$75,000–$99,999", "100000_149999":"$100,000–$149,999", "150000_plus":"$150,000 or more" };
 
@@ -31,14 +31,10 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   const customer = customerResult.data;
   const draft = draftResult.data;
   const requested = steps.includes(params.step as Step) ? params.step as Step : null;
-  if (customer?.verification_status === "verified" && requested !== "verification") redirect("/dashboard");
-  let step: Step;
-  if (customer) step = "verification";
-  else {
-    const available = (draft?.current_step ?? "personal") as Step;
-    const requestedIndex = requested ? steps.indexOf(requested) : -1;
-    step = requested && requestedIndex <= steps.indexOf(available) ? requested : available;
-  }
+  if (customer) redirect("/dashboard");
+  const available = steps.includes(draft?.current_step as Step) ? draft?.current_step as Step : "personal";
+  const requestedIndex = requested ? steps.indexOf(requested) : -1;
+  const step = requested && requestedIndex <= steps.indexOf(available) ? requested : available;
   const active = steps.indexOf(step);
   const savedDraft = draft as RegistrationDraft | null;
   const personalDraft = savedDraft ?? (identity.firstName || identity.lastName ? {
@@ -74,20 +70,5 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
     <div className="mt-7 flex flex-wrap justify-between gap-3"><Link className="inline-flex min-h-11 items-center px-2 font-semibold text-action underline" href="/register?step=employment">Back</Link><form action={completeRegistrationAction}><SubmitButton>Create customer profile</SubmitButton></form></div>
   </RegistrationShell>;
 
-  const status = (params.result ?? customer?.verification_status ?? "not_started").replaceAll("_"," ");
-  return <RegistrationShell active={active} title="Identity verification" description="Complete the identity check to activate your profile.">
-    <Alert title={`Current status: ${status}`} tone={status === "verified" ? "success" : status === "failed" ? "error" : "info"}>
-      {status === "verified" ? "Verification completed. Your profile is ready." : status === "manual review" ? "Your information is waiting for review." : status === "failed" ? "We could not complete verification. You can try again." : "Select a verification path to begin."}
-    </Alert>
-    {params.message && <div className="mt-5"><Alert title="Unable to verify" tone="error">Select a scenario and try again.</Alert></div>}
-    {status !== "verified" && <form action={verifyIdentityAction} className="mt-6 space-y-5">
-      <label className="block font-semibold" htmlFor="scenario">Verification path</label>
-      <select id="scenario" name="scenario" required className="min-h-11 w-full rounded-control border border-muted bg-surface px-3 py-2">
-        <option value="">Select an outcome</option><option value="verified">Successful verification</option><option value="failed">Failed verification</option><option value="manual_review">Manual review</option>
-      </select>
-      <p className="text-sm text-muted">Choose the path that applies to this registration.</p>
-      <SubmitButton>Complete verification</SubmitButton>
-    </form>}
-    {status === "verified" && <div className="mt-6"><Link className="inline-flex min-h-11 items-center rounded-control bg-action px-4 py-2 font-semibold text-white" href="/dashboard">Continue to dashboard</Link></div>}
-  </RegistrationShell>;
+  redirect("/register?step=personal");
 }

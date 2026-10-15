@@ -26,7 +26,7 @@ Chaze Bank uses audience navigation, a large lifestyle hero, a prominent product
 | Breakpoints | 640px small, 768px tablet, 1024px desktop, 1280px large; content-driven adjustments after reference comparison |
 | Motion | 120–200ms simple transitions; respect prefers-reduced-motion; no decorative blocking animation |
 
-Phase 1 implemented src/styles/tokens.css with Tailwind theme mappings as the sole token authority. Shared primitives live in src/components/ui and can be inspected in local/test mode at /foundation. Banking compositions remain for their domain phases. Semantic names go into components; feature files cannot invent slightly different blues, radii or gaps. Document justified exceptions with reference evidence. No dark-mode redesign is currently required.
+`src/styles/tokens.css` is the sole token authority for light and dark themes. The navigation toggle and Appearance settings use the same persisted browser preference, and the document applies that preference before paint to avoid theme flicker. Shared primitives live in `src/components/ui` and can be inspected in local/test mode at `/foundation`. Banking compositions remain in their domain features. Components use semantic surface, text, border, feedback and focus tokens so both themes retain contrast without CSS inversion.
 
 ## Component contracts
 
@@ -43,9 +43,9 @@ Primitives own accessibility and visual variants. Banking components accept type
 
 ## Layout and responsive rules
 
-Public shell: audience navigation, primary product navigation, content and footer. Banking shell: customer navigation, greeting, account summary and task areas. Staff shell is visually consistent but explicitly distinct. Authentication forms use a focused shell. Shared header/sidebar patterns own their breakpoints and menu state.
+The shared customer shell keeps the Chaze Bank logo on the left and theme, notification, settings and one sign-out control on the right for authenticated customers. Product destinations live in the dashboard service grid and footer. Banking pages include the greeting, ledger-derived balance, account summary and task areas. The staff shell is visually consistent but explicitly distinct. Authentication forms use a focused shell.
 
-At narrow widths stack cards, allow text wrapping, move navigation into a labelled keyboard-accessible drawer and keep actions reachable. Verify 320, 375, 390, 430, 768, 1024, 1280, 1440 and 1920px plus zoom/reflow. No page-level horizontal overflow. Avoid fixed heights that clip translated/large text. Keep money sign/currency readable and masked identifiers consistently formatted. Format timezone/currency explicitly; do not imply live balances while displaying stale data.
+At narrow widths stack cards, allow text wrapping and wrap the authenticated utility controls below the wordmark when needed. Verify 320, 375, 390, 430, 768, 1024, 1280, 1440 and 1920px plus zoom/reflow. No page-level horizontal overflow. Avoid fixed heights that clip translated/large text. Keep money sign/currency readable and masked identifiers consistently formatted. Format timezone/currency explicitly; do not imply live balances while displaying stale data.
 
 ## State and accessibility contract
 

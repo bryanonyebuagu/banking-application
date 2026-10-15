@@ -268,13 +268,15 @@ Persist appropriate profile information.
 
 Passwords belong exclusively to Supabase Auth.
 
+The authenticated customer onboarding UI contains four resumable steps: personal information, address, employment and review. Completing review creates the customer profile and returns the authenticated user to the dashboard. Email ownership and backend identity/compliance status remain separate controls; the customer UI cannot mark identity verification successful.
+
 ---
 
-# 8. IDENTITY VERIFICATION SIMULATOR
+# 8. IDENTITY AND COMPLIANCE VERIFICATION
 
-Create a realistic KYC/identity-verification architecture.
+Maintain a provider-ready KYC/identity-verification architecture behind the customer registration flow.
 
-The UI may model fields such as:
+Approved compliance integrations may process fields such as:
 
 - SSN/ITIN
 - government identification

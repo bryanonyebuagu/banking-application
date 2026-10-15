@@ -45,7 +45,7 @@ Every row listed has an id unless a composite/unique key is stated. Fields below
 | investment_holdings | investment_account_id, instrument_id, quantity, cost_basis; unique account/instrument; rebuildable from investment transactions |
 | investment_transactions | investment_account_id, instrument_id, kind, quantity, price, cash_amount, journal_id, occurred_at; simulated only |
 | investment_instruments / investment_prices | synthetic symbol/name; instrument_id, price, currency, observed_at; unique instrument/time, explicit simulated provenance |
-| notifications / notification_preferences | notifications: customer_id, event_id, type, safe payload, read_at; unique recipient/event/type; preferences: customer_id/type/channel unique, enabled |
+| notifications / notification_preferences | notifications: customer_id, event_id, type, safe payload, read_at; unique recipient/event/type; preferences: customer_id/type/channel unique, enabled; channels are in-app, email and SMS, with mandatory security-email enforcement in the owner command |
 | customer_preferences / account_preferences | customer_id unique for locale/privacy/display choices; account_id unique for account settings; security fields cannot be edited here |
 | customer_documents | customer_id, kind, private object key, generated/uploaded metadata; owner-only retrieval |
 | support_tickets / support_messages | tickets: customer_id, assigned_staff_id, subject, status; messages: ticket_id, author_id, body, visibility customer/internal; internal messages never customer-visible |

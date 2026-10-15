@@ -1,6 +1,6 @@
 # Project status
 
-Updated: 2026-10-14.
+Updated: 2026-10-15.
 
 ## Authentication repair in progress
 
@@ -228,6 +228,17 @@ Latest Milestone A check-deposit and statement evidence on 2026-09-30:
 - Both targets reached 22 migrations with zero pending. Parity matched 53 tables/528 columns/38 public-schema policies/three buckets, and cleanup was clean across 31 resource groups.
 
 ## Known issues and decisions
+
+Latest theme, settings, dashboard and registration update on 2026-10-14:
+
+- Added semantic light/dark themes with a pre-paint preference loader, navigation toggle, Appearance settings and persisted refresh/navigation behavior.
+- Simplified the shared customer header to the Chaze Bank wordmark, theme control and authenticated Notifications, Settings and single Sign Out controls. Removed product/profile/dashboard links beside the logo and removed the About project menu link.
+- Split Settings into Profile, Notifications, Login & Security and Appearance pages. Profile data remains owner scoped; email/SMS preferences now persist through an owner-only command, and mandatory security email cannot be disabled.
+- Added a ledger-derived USD total to the dashboard, posted-only recent activity with dates/types/statuses, signed green/red amounts, background refresh and View All Transactions.
+- Expanded the dashboard support panel to Visit Support, Frequently Asked Questions and Contact Us.
+- Reduced customer registration to Personal, Address, Employment and Review. Completion redirects to the dashboard while backend verification and compliance restrictions remain enforced.
+- Hosted development and test databases both have 39 applied migrations and matching 56-table/578-column/40-policy/three-bucket schemas. Test fixtures were removed across 44 checked resource groups.
+- Validation passed: TypeScript, lint with zero warnings, 36 unit tests, production build, 13 public responsive/accessibility browser tests, and the focused authenticated registration/settings/theme/notification/ledger browser journey.
 
 Latest authenticated-dashboard navigation refinement on 2026-10-14:
 

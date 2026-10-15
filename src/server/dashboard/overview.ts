@@ -11,7 +11,7 @@ export async function getDashboardOverview() {
     supabase.from("loans").select("id",{count:"exact",head:true}),
     supabase.from("mortgages").select("id",{count:"exact",head:true}),
     supabase.from("investment_accounts").select("id",{count:"exact",head:true}),
-    supabase.from("transactions").select("id,description,amount_minor,currency,direction,status,posted_at,created_at").order("created_at",{ascending:false}).limit(5),
+    supabase.from("transactions").select("id,description,amount_minor,currency,direction,type,status,posted_at,created_at").eq("status","posted").order("posted_at",{ascending:false}).limit(10),
     supabase.from("payments").select("id,amount_minor,currency,status,scheduled_at").not("scheduled_at","is",null).order("scheduled_at").limit(5),
     supabase.from("notifications").select("id,title,body,read_at,created_at").order("created_at",{ascending:false}).limit(3),
   ]);
@@ -21,9 +21,11 @@ export async function getDashboardOverview() {
     console.error(JSON.stringify({ event: "DASHBOARD_QUERY_FAILED", failures: results.flatMap((result, index) => result.error ? [{ query: names[index], code: result.error.code }] : []) }));
     throw new Error("DASHBOARD_QUERY_FAILED");
   }
+  const accountRows=(accounts.data ?? []).map((account)=>({...account,balance:balances.data?.find((item)=>item.account_id===account.id)??null}));
+  const totalAvailableUsdMinor=accountRows.filter((account)=>account.status==="active"&&account.currency==="USD").reduce((total,account)=>total+(account.balance?.available_balance_minor??0),0);
   return {
     customer:customer.data,
-    accounts:(accounts.data ?? []).map((account)=>({...account,balance:balances.data?.find((item)=>item.account_id===account.id)??null})),
+    accounts:accountRows,totalAvailableUsdMinor,
     productCounts:{credit:credit.count ?? 0,loans:(loans.count ?? 0)+(mortgages.count ?? 0),investments:investments.count ?? 0},
     transactions:transactions.data ?? [],payments:payments.data ?? [],notifications:notifications.data ?? [],
   };

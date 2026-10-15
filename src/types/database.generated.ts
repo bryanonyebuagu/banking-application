@@ -1111,6 +1111,9 @@ isOneToOne: false
               "account_id": string,"account_nickname": string,"amount_minor": number,"category": string,"created_at": string,"currency": string,"description": string,"direction": string,"id": string,"masked_account_number": string,"merchant": string,"posted_at": string,"status": string,"type": string
             }[]
                            },
+"set_current_notification_delivery_preference":
+{ Args: { "p_channel": string,"p_enabled": boolean,"p_type": string }; Returns: undefined
+                           },
 "set_current_notification_preference":
 { Args: { "p_enabled": boolean,"p_type": string }; Returns: undefined
                            },
